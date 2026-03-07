@@ -1,5 +1,6 @@
 # Multi-Modal Reinforcement Learning for Autonomous Extreme Weather Emergency Response
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/demo_pipeline.ipynb)
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0-orange.svg)](https://pytorch.org/)
 [![Stable-Baselines3](https://img.shields.io/badge/SB3-2.0-green.svg)](https://stable-baselines3.readthedocs.io/)

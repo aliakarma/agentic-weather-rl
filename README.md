@@ -1,5 +1,10 @@
 <div align="center">
 
+<!-- LOGO / BANNER -->
+<img src="https://raw.githubusercontent.com/aliakarma/agentic-weather-rl/main/data/assets/banner.png" alt="agentic-weather-rl Banner" width="100%" onerror="this.style.display='none'"/>
+
+<div align="center">
+
 # 🌪️ Multi-Modal RL Weather Emergency Response
 
 ### *Autonomous Extreme Weather Detection & Emergency Orchestration via Multi-Agent AI*

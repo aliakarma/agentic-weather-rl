@@ -39,7 +39,6 @@
 - [Training Pipeline](#-training-pipeline)
 - [Results](#-results)
 - [Reproducibility](#-reproducibility)
-- [Citation](#-citation)
 - [License](#-license)
 
 ---

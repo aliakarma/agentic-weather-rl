@@ -1,0 +1,5 @@
+scenario,decision_accuracy
+storm_warning,0.91
+flood_response,0.87
+evacuation_decision,0.84
+no_action,0.93

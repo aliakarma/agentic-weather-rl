@@ -18,11 +18,7 @@
 &nbsp;
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat&logo=github)](https://github.com/aliakarma/agentic-weather-rl/pulls)
 
-<br/>
 
-<img src="architecture/system_architecture.png" alt="System Architecture" width="720"/>
-
-<br/>
 
 > **"Multi-Modal Reinforcement Learning for Autonomous Extreme Weather Emergency Response"**
 > 

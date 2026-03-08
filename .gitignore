@@ -5,3 +5,10 @@ __pycache__/
 *.log
 .env
 weather-rl;
+
+weather-rl/
+weather-rl.zip
+*.nc
+data/goes16/
+data/sevir/
+data/nexrad/

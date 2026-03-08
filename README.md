@@ -593,23 +593,6 @@ This work builds on:
 
 ---
 
-## Citation
-
-```bibtex
-@article{yourname2025riskmarl,
-  title     = {Risk-Aware Multi-Agent Reinforcement Learning for Coordinated
-               Cloudburst Disaster Response},
-  author    = {Your Name and Co-authors},
-  journal   = {Mathematics},
-  volume    = {XX},
-  number    = {X},
-  year      = {2025},
-  publisher = {MDPI},
-  doi       = {10.3390/mathXXXXXXXX}
-}
-```
-
----
 
 ## License
 

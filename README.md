@@ -52,7 +52,7 @@ No training needed. Evaluate the pretrained model immediately:
 
 ```bash
 git clone https://github.com/aliakarma/agentic-weather-rl.git
-cd risk-aware-marl-cloudburst
+cd agentic-weather-rl
 pip install -r requirements.txt
 bash scripts/demo.sh
 ```

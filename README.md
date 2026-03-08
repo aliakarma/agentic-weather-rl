@@ -6,8 +6,8 @@
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/)
 [![PyTorch 2.1](https://img.shields.io/badge/pytorch-2.1-orange.svg)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Demo Notebook](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/your-username/risk-aware-marl-cloudburst/blob/main/notebooks/colab_demo.ipynb)
-[![Full Training](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/your-username/risk-aware-marl-cloudburst/blob/main/notebooks/colab_train.ipynb)
+[![Demo Notebook](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_demo.ipynb)
+[![Full Training](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_train.ipynb)
 
 A constrained multi-agent reinforcement learning (MARL) framework for coordinated
 disaster response under extreme weather. Three specialised agents — Storm Detection,
@@ -23,8 +23,6 @@ The system follows a **three-layer architecture** (Paper Sections 3.1–3.5):
   Lagrangian-relaxed CTDE-PPO with heterogeneous, agent-specific observations.
 - **Layer 3 — Orchestration Interface:** translates the joint action a_t into
   simulated downstream emergency response callbacks.
-
-![Architecture](figures/architecture.png)
 
 > **Reviewers:** The fastest way to verify results is via Google Colab —
 > no local setup required. See the [Run on Google Colab](#run-on-google-colab--no-setup-required) section below.
@@ -61,7 +59,7 @@ Expected output:
 
 ```
 Loading checkpoint: checkpoints/marl_policy.pt  (single best seed)
-Running 500 evaluation episodes...
+Running evaluation (20 episodes)...
 
 Storm Warning Accuracy    :  0.91
 Flood Risk Accuracy       :  0.87
@@ -73,7 +71,8 @@ Violation Rate (this seed):   2.4%
 Note: Paper Table 2 reports 81.5 ± 2.6 and VR = 2.3% as the mean
       across all 5 seeds. Single-seed results vary within ± std.
 
-Done. Results saved to results/demo_output/
+Demo complete.
+Results saved to: results/example_results/eval_lagrangian_ctde.json
 ```
 
 Runtime: **3–5 minutes** on CPU or GPU.
@@ -87,10 +86,10 @@ the browser. No installation, no downloads, no environment setup.
 
 | Notebook | What it does | Runtime | GPU needed |
 |----------|-------------|---------|------------|
-| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/your-username/risk-aware-marl-cloudburst/blob/main/notebooks/colab_demo.ipynb) **Demo** | Loads pretrained checkpoint, runs 500 eval episodes, prints Table 2 & 3 results | ~5 min | No (CPU runtime) |
-| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/your-username/risk-aware-marl-cloudburst/blob/main/notebooks/colab_train.ipynb) **Short Training** | Trains proposed method for 100 episodes, plots live reward curve | ~20 min | T4 (free tier) |
-| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/your-username/risk-aware-marl-cloudburst/blob/main/notebooks/colab_full.ipynb) **Full Reproduction** | Trains all 5 seeds + all 6 baselines, exports Tables 2–4 as CSV | ~4–5 hrs | A100 (Colab Pro) |
-| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/your-username/risk-aware-marl-cloudburst/blob/main/notebooks/colab_perception.ipynb) **Perception Ablation** | Trains all 4 encoder variants from Table 1 on the SEVIR sample | ~30 min | T4 (free tier) |
+| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_demo.ipynb) **Demo** | Loads pretrained checkpoint and runs evaluation | ~5 min | No (CPU runtime) |
+| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_train.ipynb) **Short Training** | Trains proposed method for 100 episodes | ~20 min | T4 (free tier) |
+| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_full.ipynb) **Full Reproduction** | Longer-run training/evaluation workflow | ~4-5 hrs | A100 (Colab Pro) |
+| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_perception.ipynb) **Perception Ablation** | Encoder ablation workflow | ~30 min | T4 (free tier) |
 
 ### What each Colab notebook does step by step
 
@@ -100,7 +99,7 @@ the browser. No installation, no downloads, no environment setup.
 2. Downloads `checkpoints/marl_policy.pt` from the repo
 3. Runs `src/evaluate.py` over 500 episodes against the synthetic benchmark
 4. Prints per-scenario decision accuracy (Table 3) and reward/VR matching Table 2
-5. Plots the architecture diagram (`figures/architecture.png`)
+5. Saves evaluation metrics to `results/example_results/`
 
 No Google account storage is used. Runs in under 5 minutes on a free CPU runtime.
 
@@ -135,8 +134,7 @@ episode 600 per Fig. 2(a) of the paper.
 
 **`colab_perception.ipynb` — Table 1 encoder ablation**
 
-1. Downloads the 50-storm SEVIR sample (`data/sample/sevir_subset.h5`, ~150 MB)
-   directly from the repository — no 30 GB full dataset needed
+1. Uses sample-mode data flow for quick ablation runs (`--use_sample`)
 2. Trains all four encoder variants: radar-only CNN, multi-modal CNN,
    single-modal ViT, and multi-modal ViT (ours)
 3. Reports accuracy, precision, recall, and F1 for each variant
@@ -180,7 +178,7 @@ if preferred.
 ## Repository Structure
 
 ```
-risk-aware-marl-cloudburst/
+agentic-weather-rl/
 │
 ├── README.md
 ├── LICENSE
@@ -245,20 +243,10 @@ risk-aware-marl-cloudburst/
 │   ├── colab_full.ipynb          # ▶ Full paper reproduction (~4–5 hrs, Colab Pro)
 │   └── colab_perception.ipynb    # ▶ Table 1 encoder ablation (~30 min, T4 free)
 │
-├── data/
-│   └── sample/
-│       └── sevir_subset.h5       # 50-storm SEVIR sample (~150 MB)
-│
 ├── results/
 │   └── example_results/
-│       ├── reward_curve.png      # Fig. 2(a): mean episodic reward vs. episodes
-│       ├── violation_rate.png    # Fig. 2(c): VR across training
-│       ├── lambda_curves.png     # Fig. 2(b): dual variable λ_i over training
-│       └── tables.csv            # Tables 2–4 numerical results
 │
-└── figures/
-    ├── architecture.png          # Fig. 1: three-layer system architecture
-    └── training_dynamics.png     # Fig. 2: training curves (reward, λ, VR)
+└── runs/                         # TensorBoard logs generated by scripts
 ```
 
 **Total repo size:** ~400 MB (checkpoints + sample data).
@@ -269,8 +257,8 @@ risk-aware-marl-cloudburst/
 
 ```bash
 # 1. Clone
-git clone https://github.com/aliakarma/risk-aware-marl-cloudburst.git
-cd risk-aware-marl-cloudburst
+git clone https://github.com/aliakarma/agentic-weather-rl.git
+cd agentic-weather-rl
 
 # 2. Create virtual environment
 python3.10 -m venv venv
@@ -283,26 +271,28 @@ pip install -r requirements.txt
 python -c "import torch; from src.environment.disaster_env import DisasterEnv; print('OK')"
 ```
 
-`requirements.txt`:
+`requirements.txt` (excerpt):
 
 ```
-torch==2.1.0
-torchvision==0.16.0
+torch==2.1.0; python_version < "3.12"
+torchvision==0.16.0; python_version < "3.12"
+torch==2.2.2; python_version >= "3.12"
+torchvision==0.17.2; python_version >= "3.12"
 timm==0.9.12
 stable-baselines3==2.2.1
 gymnasium==0.29.1
-numpy==1.26.2
-scipy==1.11.4
-pandas==2.1.3
-matplotlib==3.8.2
-pyyaml==6.0.1
-tqdm==4.66.1
-h5py==3.10.0
-netCDF4==1.6.5
-tensorboard==2.15.1
+numpy<2
+scipy
+pandas
+matplotlib
+pyyaml
+tqdm
+h5py
+netCDF4
+tensorboard
 ```
 
-**Requirements:** Python 3.10, any NVIDIA GPU (or CPU for demo and short run).
+**Requirements:** Python 3.10+ (Python 3.12 supported by dependency markers), any NVIDIA GPU (or CPU for demo and short run).
 No multi-GPU setup required.
 
 ---
@@ -311,10 +301,8 @@ No multi-GPU setup required.
 
 ### Option 1 — Demo with pretrained model (~5 min, no training)
 
-Loads `checkpoints/marl_policy.pt` (best single seed) and evaluates
-over 500 episodes. Per-scenario decision accuracy matches Table 3 of
-the paper. Reward and VR are single-seed values; the paper's Table 2
-figures are 5-seed means.
+Loads `checkpoints/marl_policy.pt` and evaluates over 20 episodes by default.
+Use `--episodes 500` for paper-style evaluation length.
 
 ```bash
 bash scripts/demo.sh
@@ -355,9 +343,8 @@ Expected final result (mean ± std, 5 seeds, 500 eval episodes):
 
 ### Option 4 — Baseline comparisons (~2–3 hrs on A100)
 
-Trains all six baseline methods from Table 2 across 5 seeds each.
-Must be run after Option 3 (or standalone) to populate the full
-comparison table.
+Trains all six baseline methods with a single default seed.
+Use repeated runs with different `--seed` values for multi-seed aggregation.
 
 ```bash
 bash scripts/train_baselines.sh
@@ -419,10 +406,10 @@ perception:
   input_size: 224         # Radar and satellite frames resized to 224×224
 ```
 
-To override any value without editing files:
+To override key training options without editing files:
 
 ```bash
-python src/train.py --episodes 200 --lr 1e-4 --seeds 0 1 2
+python -m src.train --algo lagrangian_ctde --episodes 200 --device cpu --seed 42
 ```
 
 ### State Dimension Note
@@ -442,7 +429,7 @@ accordingly when switching modes.
 ## Monitoring Training
 
 ```bash
-tensorboard --logdir results/logs/
+tensorboard --logdir runs/
 ```
 
 Three key signals from the paper's Fig. 2 to watch during training:
@@ -470,53 +457,29 @@ two-stream ViT that jointly processes radar (NEXRAD) and satellite
 of both modalities; GOES-16 and NEXRAD archives provide additional
 standalone coverage.
 
-### SEVIR — Primary (~30 GB)
-
-~10,000 storm events with aligned NEXRAD radar reflectivity and
-GOES-16 visible/IR imagery at 384×384 px. Used for supervised
-pre-training of the ViT encoder.
-
-```bash
-python src/models/vit_encoder.py \
-    --download sevir \
-    --data_dir data/sevir/
-```
-
-### GOES-16 ABI — Auxiliary satellite context (~50 GB, optional)
-
-Multi-year geostationary imagery at 4 km resolution. Supplements
-SEVIR with broader synoptic context.
-
-```bash
-python src/models/vit_encoder.py \
-    --download goes16 \
-    --data_dir data/goes16/ \
-    --channels C02 C13 \
-    --start 2018-01-01 --end 2021-12-31
-```
-
-### NEXRAD WSR-88D — Auxiliary radar features (~40 GB, optional)
-
-Multi-year Level-III radar composites at ~1 km radial resolution.
-Supplements SEVIR for precipitation structure characterisation.
-
-```bash
-python src/models/vit_encoder.py \
-    --download nexrad \
-    --data_dir data/nexrad/ \
-    --start 2018-01-01 --end 2021-12-31
-```
-
 ### Train the encoder
 
+The `vit_encoder.py` CLI supports `--mode train|eval` with `--data_dir` and
+`--checkpoint` flags.
+
 ```bash
-python src/models/vit_encoder.py \
-    --train \
-    --sevir_dir data/sevir/ \
-    --goes_dir data/goes16/ \
-    --nexrad_dir data/nexrad/ \
-    --config configs/perception.yaml \
-    --output checkpoints/perception_encoder.pt
+python -m src.models.vit_encoder \
+  --mode train \
+  --data_dir data/sevir/ \
+  --checkpoint checkpoints/perception_encoder.pt \
+  --epochs 50 \
+  --lr 1e-4 \
+  --batch_size 32
+```
+
+Quick sample run:
+
+```bash
+python -m src.models.vit_encoder \
+  --mode train \
+  --data_dir data/sample/ \
+  --checkpoint checkpoints/perception_encoder.pt \
+  --use_sample
 ```
 
 Training time: ~4–6 hours on a single A100 40 GB / RTX 3090.

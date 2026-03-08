@@ -1,0 +1,36 @@
+# ============================================================
+#  Risk-Aware MARL for Cloudburst Disaster Response
+#  requirements.txt — pinned for full reproducibility
+# ============================================================
+
+# Deep learning core
+torch==2.1.0
+torchvision==0.16.0
+
+# Vision Transformer backbone (ViT-B/16)
+timm==0.9.12
+
+# Reinforcement learning framework
+stable-baselines3==2.2.1
+gymnasium==0.29.1
+
+# Scientific computing
+numpy
+scipy
+pandas
+
+# Visualisation
+matplotlib
+
+# Configuration
+pyyaml
+
+# Progress bars
+tqdm
+
+# Dataset I/O
+h5py          # SEVIR HDF5 storm event files
+netCDF4       # GOES-16 NetCDF satellite products
+
+# Experiment tracking
+tensorboard

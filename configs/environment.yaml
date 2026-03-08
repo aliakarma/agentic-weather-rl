@@ -1,0 +1,58 @@
+# ============================================================
+#  configs/environment.yaml
+#  DisasterResponseBenchmark environment parameters.
+#  Matches Table 1 of the paper exactly.
+#  Used by src/environment/disaster_env.py and hazard_generator.py.
+# ============================================================
+
+# Inherit shared defaults
+defaults:
+  - default
+
+# ── Grid world ───────────────────────────────────────────────
+grid_size: 20                  # 20×20 spatial grid
+n_agents: 3                    # Storm Detection, Flood Risk, Evacuation Planning
+
+# ── Episode structure ─────────────────────────────────────────
+episode_length: 100            # steps per episode T
+
+# ── State and observation spaces ──────────────────────────────
+# NOTE: state_dim=24 applies to synthetic mode only.
+# When mode=perception in training.yaml, the ViT encoder output
+# φ_t has d_φ=128 and state_dim must be updated to match.
+state_dim: 24                  # global state dimension (synthetic mode)
+obs_dim: 12                    # local observation dimension per agent
+
+# ── Hazard generator ─────────────────────────────────────────
+# Hazard events follow a Poisson arrival process; risk fields evolve
+# via spatially correlated Gaussian processes (Section 4.1 of paper).
+hazard_lambda: 0.05            # Poisson arrival rate λ per step
+hazard_types:                  # supported event types
+  - storm
+  - flood
+  - combined
+
+# Gaussian process spatial correlation parameters
+hazard_gp_lengthscale: 3.0    # spatial correlation length (grid cells)
+hazard_gp_variance: 1.0        # GP output variance
+
+# ── Reward function coefficients (Eq. 4 of paper) ────────────
+reward_alpha: 1.0              # mitigation effectiveness weight α
+reward_beta: 0.5               # false-alarm penalty weight β
+reward_eta: 0.3                # late-intervention delay penalty weight η
+
+# ── Agent-specific observation routing ───────────────────────
+# Defines which components of s_t each agent observes.
+# Implements o_{i,t} ⊂ s_t per Section 3.3 of the paper.
+# Used by src/environment/obs_router.py.
+agent_obs:
+  agent_1:                     # Storm Detection Agent
+    - phi_t                    # perception encoder features
+    - p_storm                  # storm probability
+  agent_2:                     # Flood Risk Assessment Agent
+    - i_rain                   # normalised rainfall intensity
+    - l_river                  # river-level indicator
+  agent_3:                     # Evacuation Planning Agent
+    - agent_1_output           # forwarded output from Agent 1
+    - agent_2_output           # forwarded output from Agent 2
+    - v_region                 # regional vulnerability score

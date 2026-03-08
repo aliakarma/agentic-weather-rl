@@ -1,0 +1,13 @@
+# datasets
+data/full_dataset/
+
+# large checkpoints
+*.pt
+
+# python
+__pycache__/
+*.pyc
+
+# environments
+venv/
+.env

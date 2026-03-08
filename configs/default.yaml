@@ -1,0 +1,24 @@
+# ============================================================
+#  configs/default.yaml
+#  Shared base configuration — inherited by all other configs.
+#  Do NOT run experiments directly from this file.
+#  Override values in training.yaml / environment.yaml / perception.yaml.
+# ============================================================
+
+# ── Reproducibility ──────────────────────────────────────────
+seed: 0                        # global fallback seed (overridden per run)
+deterministic: true            # sets CUBLAS_WORKSPACE_CONFIG for full reproducibility
+
+# ── Logging & output ─────────────────────────────────────────
+log_dir: results/logs
+checkpoint_dir: checkpoints
+results_dir: results
+tensorboard: true              # write TensorBoard event files
+log_interval: 10               # log every N episodes
+save_interval: 100             # save checkpoint every N episodes
+
+# ── Device ───────────────────────────────────────────────────
+device: auto                   # "auto" → cuda if available, else cpu
+
+# ── Runtime ──────────────────────────────────────────────────
+num_workers: 4                 # DataLoader workers (perception training only)

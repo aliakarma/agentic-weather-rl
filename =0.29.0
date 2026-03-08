@@ -1,0 +1,179 @@
+Defaulting to user installation because normal site-packages is not writeable
+Collecting stable-baselines3
+  Downloading stable_baselines3-2.7.1-py3-none-any.whl.metadata (4.8 kB)
+Collecting gymnasium
+  Downloading gymnasium-1.2.3-py3-none-any.whl.metadata (10 kB)
+Collecting scikit-learn
+  Downloading scikit_learn-1.8.0-cp313-cp313-win_amd64.whl.metadata (11 kB)
+Requirement already satisfied: Pillow in c:\users\hamma\appdata\roaming\python\python313\site-packages (12.1.1)
+Collecting opencv-python
+  Downloading opencv_python-4.13.0.92-cp37-abi3-win_amd64.whl.metadata (20 kB)
+Collecting h5py
+  Downloading h5py-3.16.0-cp313-cp313-win_amd64.whl.metadata (3.1 kB)
+Collecting netCDF4
+  Downloading netcdf4-1.7.4-cp311-abi3-win_amd64.whl.metadata (2.1 kB)
+Collecting matplotlib
+  Using cached matplotlib-3.10.8-cp313-cp313-win_amd64.whl.metadata (52 kB)
+Collecting seaborn
+  Downloading seaborn-0.13.2-py3-none-any.whl.metadata (5.4 kB)
+Collecting tqdm
+  Downloading tqdm-4.67.3-py3-none-any.whl.metadata (57 kB)
+Requirement already satisfied: pyyaml in c:\users\hamma\appdata\roaming\python\python313\site-packages (6.0.2)
+Collecting tensorboard
+  Downloading tensorboard-2.20.0-py3-none-any.whl.metadata (1.8 kB)
+Collecting timm
+  Downloading timm-1.0.25-py3-none-any.whl.metadata (38 kB)
+Requirement already satisfied: numpy<3.0,>=1.20 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from stable-baselines3) (2.4.2)
+Requirement already satisfied: torch<3.0,>=2.3 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from stable-baselines3) (2.10.0)
+Collecting cloudpickle (from stable-baselines3)
+  Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+Collecting pandas (from stable-baselines3)
+  Downloading pandas-3.0.1-cp313-cp313-win_amd64.whl.metadata (19 kB)
+Requirement already satisfied: typing-extensions>=4.3.0 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from gymnasium) (4.15.0)
+Collecting farama-notifications>=0.0.1 (from gymnasium)
+  Downloading Farama_Notifications-0.0.4-py3-none-any.whl.metadata (558 bytes)
+Requirement already satisfied: filelock in c:\users\hamma\appdata\roaming\python\python313\site-packages (from torch<3.0,>=2.3->stable-baselines3) (3.25.0)
+Requirement already satisfied: sympy>=1.13.3 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from torch<3.0,>=2.3->stable-baselines3) (1.14.0)
+Requirement already satisfied: networkx>=2.5.1 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from torch<3.0,>=2.3->stable-baselines3) (3.6.1)
+Requirement already satisfied: jinja2 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from torch<3.0,>=2.3->stable-baselines3) (3.1.6)
+Requirement already satisfied: fsspec>=0.8.5 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from torch<3.0,>=2.3->stable-baselines3) (2026.2.0)
+Requirement already satisfied: setuptools in c:\users\hamma\appdata\roaming\python\python313\site-packages (from torch<3.0,>=2.3->stable-baselines3) (82.0.0)
+Collecting scipy>=1.10.0 (from scikit-learn)
+  Downloading scipy-1.17.1-cp313-cp313-win_amd64.whl.metadata (60 kB)
+Collecting joblib>=1.3.0 (from scikit-learn)
+  Downloading joblib-1.5.3-py3-none-any.whl.metadata (5.5 kB)
+Collecting threadpoolctl>=3.2.0 (from scikit-learn)
+  Downloading threadpoolctl-3.6.0-py3-none-any.whl.metadata (13 kB)
+Collecting cftime (from netCDF4)
+  Downloading cftime-1.6.5-cp313-cp313-win_amd64.whl.metadata (8.8 kB)
+Collecting certifi (from netCDF4)
+  Downloading certifi-2026.2.25-py3-none-any.whl.metadata (2.5 kB)
+Collecting contourpy>=1.0.1 (from matplotlib)
+  Using cached contourpy-1.3.3-cp313-cp313-win_amd64.whl.metadata (5.5 kB)
+Collecting cycler>=0.10 (from matplotlib)
+  Using cached cycler-0.12.1-py3-none-any.whl.metadata (3.8 kB)
+Collecting fonttools>=4.22.0 (from matplotlib)
+  Using cached fonttools-4.61.1-cp313-cp313-win_amd64.whl.metadata (116 kB)
+Collecting kiwisolver>=1.3.1 (from matplotlib)
+  Using cached kiwisolver-1.4.9-cp313-cp313-win_amd64.whl.metadata (6.4 kB)
+Requirement already satisfied: packaging>=20.0 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from matplotlib) (25.0)
+Collecting pyparsing>=3 (from matplotlib)
+  Using cached pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
+Collecting python-dateutil>=2.7 (from matplotlib)
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Requirement already satisfied: colorama in c:\users\hamma\appdata\roaming\python\python313\site-packages (from tqdm) (0.4.6)
+Collecting absl-py>=0.4 (from tensorboard)
+  Downloading absl_py-2.4.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting grpcio>=1.48.2 (from tensorboard)
+  Downloading grpcio-1.78.0-cp313-cp313-win_amd64.whl.metadata (3.9 kB)
+Collecting markdown>=2.6.8 (from tensorboard)
+  Downloading markdown-3.10.2-py3-none-any.whl.metadata (5.1 kB)
+Collecting protobuf!=4.24.0,>=3.19.6 (from tensorboard)
+  Downloading protobuf-7.34.0-cp310-abi3-win_amd64.whl.metadata (595 bytes)
+Collecting tensorboard-data-server<0.8.0,>=0.7.0 (from tensorboard)
+  Downloading tensorboard_data_server-0.7.2-py3-none-any.whl.metadata (1.1 kB)
+Requirement already satisfied: werkzeug>=1.0.1 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from tensorboard) (3.1.3)
+Requirement already satisfied: torchvision in c:\users\hamma\appdata\roaming\python\python313\site-packages (from timm) (0.25.0)
+Collecting huggingface_hub (from timm)
+  Downloading huggingface_hub-1.6.0-py3-none-any.whl.metadata (13 kB)
+Collecting safetensors (from timm)
+  Downloading safetensors-0.7.0-cp38-abi3-win_amd64.whl.metadata (4.2 kB)
+Collecting tzdata (from pandas->stable-baselines3)
+  Downloading tzdata-2025.3-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting six>=1.5 (from python-dateutil>=2.7->matplotlib)
+  Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from sympy>=1.13.3->torch<3.0,>=2.3->stable-baselines3) (1.3.0)
+Requirement already satisfied: MarkupSafe>=2.1.1 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from werkzeug>=1.0.1->tensorboard) (3.0.2)
+Collecting hf-xet<2.0.0,>=1.3.2 (from huggingface_hub->timm)
+  Downloading hf_xet-1.3.2-cp37-abi3-win_amd64.whl.metadata (4.9 kB)
+Collecting httpx<1,>=0.23.0 (from huggingface_hub->timm)
+  Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting typer (from huggingface_hub->timm)
+  Downloading typer-0.24.1-py3-none-any.whl.metadata (16 kB)
+Collecting anyio (from httpx<1,>=0.23.0->huggingface_hub->timm)
+  Downloading anyio-4.12.1-py3-none-any.whl.metadata (4.3 kB)
+Collecting httpcore==1.* (from httpx<1,>=0.23.0->huggingface_hub->timm)
+  Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting idna (from httpx<1,>=0.23.0->huggingface_hub->timm)
+  Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx<1,>=0.23.0->huggingface_hub->timm)
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Requirement already satisfied: click>=8.2.1 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from typer->huggingface_hub->timm) (8.3.0)
+Collecting shellingham>=1.3.0 (from typer->huggingface_hub->timm)
+  Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)
+Requirement already satisfied: rich>=12.3.0 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from typer->huggingface_hub->timm) (14.1.0)
+Collecting annotated-doc>=0.0.2 (from typer->huggingface_hub->timm)
+  Downloading annotated_doc-0.0.4-py3-none-any.whl.metadata (6.6 kB)
+Requirement already satisfied: markdown-it-py>=2.2.0 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from rich>=12.3.0->typer->huggingface_hub->timm) (4.0.0)
+Requirement already satisfied: pygments<3.0.0,>=2.13.0 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from rich>=12.3.0->typer->huggingface_hub->timm) (2.19.2)
+Requirement already satisfied: mdurl~=0.1 in c:\users\hamma\appdata\roaming\python\python313\site-packages (from markdown-it-py>=2.2.0->rich>=12.3.0->typer->huggingface_hub->timm) (0.1.2)
+Downloading stable_baselines3-2.7.1-py3-none-any.whl (188 kB)
+Downloading gymnasium-1.2.3-py3-none-any.whl (952 kB)
+   ---------------------------------------- 952.1/952.1 kB 521.6 kB/s  0:00:01
+Downloading scikit_learn-1.8.0-cp313-cp313-win_amd64.whl (8.0 MB)
+   ---------------------------------------- 8.0/8.0 MB 162.3 kB/s  0:00:57
+Downloading opencv_python-4.13.0.92-cp37-abi3-win_amd64.whl (40.2 MB)
+   ---------------------------------------- 40.2/40.2 MB 169.3 kB/s  0:05:12
+Downloading h5py-3.16.0-cp313-cp313-win_amd64.whl (3.2 MB)
+   ---------------------------------------- 3.2/3.2 MB 98.2 kB/s  0:00:32
+Downloading netcdf4-1.7.4-cp311-abi3-win_amd64.whl (21.3 MB)
+   ---------------------------------------- 21.3/21.3 MB 128.6 kB/s  0:02:06
+Using cached matplotlib-3.10.8-cp313-cp313-win_amd64.whl (8.1 MB)
+Using cached seaborn-0.13.2-py3-none-any.whl (294 kB)
+Using cached tqdm-4.67.3-py3-none-any.whl (78 kB)
+Using cached tensorboard-2.20.0-py3-none-any.whl (5.5 MB)
+Using cached tensorboard_data_server-0.7.2-py3-none-any.whl (2.4 kB)
+Using cached timm-1.0.25-py3-none-any.whl (2.6 MB)
+Using cached absl_py-2.4.0-py3-none-any.whl (135 kB)
+Using cached cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+Using cached contourpy-1.3.3-cp313-cp313-win_amd64.whl (226 kB)
+Using cached cycler-0.12.1-py3-none-any.whl (8.3 kB)
+Using cached Farama_Notifications-0.0.4-py3-none-any.whl (2.5 kB)
+Using cached fonttools-4.61.1-cp313-cp313-win_amd64.whl (2.3 MB)
+Using cached grpcio-1.78.0-cp313-cp313-win_amd64.whl (4.8 MB)
+Using cached joblib-1.5.3-py3-none-any.whl (309 kB)
+Using cached kiwisolver-1.4.9-cp313-cp313-win_amd64.whl (73 kB)
+Using cached markdown-3.10.2-py3-none-any.whl (108 kB)
+Using cached pandas-3.0.1-cp313-cp313-win_amd64.whl (9.7 MB)
+Using cached protobuf-7.34.0-cp310-abi3-win_amd64.whl (437 kB)
+Using cached pyparsing-3.3.2-py3-none-any.whl (122 kB)
+Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Using cached scipy-1.17.1-cp313-cp313-win_amd64.whl (36.5 MB)
+Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Using cached threadpoolctl-3.6.0-py3-none-any.whl (18 kB)
+Using cached certifi-2026.2.25-py3-none-any.whl (153 kB)
+Using cached cftime-1.6.5-cp313-cp313-win_amd64.whl (465 kB)
+Using cached huggingface_hub-1.6.0-py3-none-any.whl (612 kB)
+Using cached hf_xet-1.3.2-cp37-abi3-win_amd64.whl (3.6 MB)
+Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
+Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
+Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Using cached anyio-4.12.1-py3-none-any.whl (113 kB)
+Using cached idna-3.11-py3-none-any.whl (71 kB)
+Using cached safetensors-0.7.0-cp38-abi3-win_amd64.whl (341 kB)
+Using cached typer-0.24.1-py3-none-any.whl (56 kB)
+Using cached annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
+Using cached shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+Using cached tzdata-2025.3-py2.py3-none-any.whl (348 kB)
+Installing collected packages: farama-notifications, tzdata, tqdm, threadpoolctl, tensorboard-data-server, six, shellingham, scipy, safetensors, pyparsing, protobuf, opencv-python, markdown, kiwisolver, joblib, idna, hf-xet, h5py, h11, grpcio, fonttools, cycler, contourpy, cloudpickle, cftime, certifi, annotated-doc, absl-py, tensorboard, scikit-learn, python-dateutil, netCDF4, httpcore, gymnasium, anyio, typer, pandas, matplotlib, httpx, stable-baselines3, seaborn, huggingface_hub, timm
+  WARNING: The script tqdm.exe is installed in 'C:\Users\hamma\AppData\Roaming\Python\Python313\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The script markdown_py.exe is installed in 'C:\Users\hamma\AppData\Roaming\Python\Python313\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The scripts fonttools.exe, pyftmerge.exe, pyftsubset.exe and ttx.exe are installed in 'C:\Users\hamma\AppData\Roaming\Python\Python313\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The script tensorboard.exe is installed in 'C:\Users\hamma\AppData\Roaming\Python\Python313\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The scripts nc3tonc4.exe, nc4tonc3.exe and ncinfo.exe are installed in 'C:\Users\hamma\AppData\Roaming\Python\Python313\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The script typer.exe is installed in 'C:\Users\hamma\AppData\Roaming\Python\Python313\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The script httpx.exe is installed in 'C:\Users\hamma\AppData\Roaming\Python\Python313\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+  WARNING: The scripts hf.exe and tiny-agents.exe are installed in 'C:\Users\hamma\AppData\Roaming\Python\Python313\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+
+Successfully installed absl-py-2.4.0 annotated-doc-0.0.4 anyio-4.12.1 certifi-2026.2.25 cftime-1.6.5 cloudpickle-3.1.2 contourpy-1.3.3 cycler-0.12.1 farama-notifications-0.0.4 fonttools-4.61.1 grpcio-1.78.0 gymnasium-1.2.3 h11-0.16.0 h5py-3.16.0 hf-xet-1.3.2 httpcore-1.0.9 httpx-0.28.1 huggingface_hub-1.6.0 idna-3.11 joblib-1.5.3 kiwisolver-1.4.9 markdown-3.10.2 matplotlib-3.10.8 netCDF4-1.7.4 opencv-python-4.13.0.92 pandas-3.0.1 protobuf-7.34.0 pyparsing-3.3.2 python-dateutil-2.9.0.post0 safetensors-0.7.0 scikit-learn-1.8.0 scipy-1.17.1 seaborn-0.13.2 shellingham-1.5.4 six-1.17.0 stable-baselines3-2.7.1 tensorboard-2.20.0 tensorboard-data-server-0.7.2 threadpoolctl-3.6.0 timm-1.0.25 tqdm-4.67.3 typer-0.24.1 tzdata-2025.3
+
+[notice] A new release of pip is available: 25.2 -> 26.0.1
+[notice] To update, run: python.exe -m pip install --upgrade pip

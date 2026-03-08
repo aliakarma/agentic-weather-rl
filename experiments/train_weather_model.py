@@ -38,6 +38,100 @@ from models.multimodal_encoder import MultiModalWeatherEncoder
 
 
 # ---------------------------------------------------------------------------
+# Real GOES satellite dataset
+# ---------------------------------------------------------------------------
+
+class RealGOESDataset(Dataset):
+    """
+    Dataset built from real GOES-16 MCMIP NetCDF4 files.
+
+    Extracts three channels per file:
+      C02 — Visible reflectance (0 = dark/clear, 1 = bright/cloudy)
+      C09 — Mid-level water vapour brightness temperature (K)
+      C13 — Clean IR window brightness temperature (K)
+            Cold tops (low K) = deep convective storms.
+
+    Labels are derived from physical properties:
+      storm_probability  = fraction of cold cloud tops (C13 < 240 K)
+      rainfall_intensity = combined cold + bright signal
+      flood_risk         = weighted combination of both
+
+    Each file is divided into non-overlapping patches of size img_size x img_size.
+    """
+
+    C13_COLD  = 240.0   # K — threshold for deep convective cloud tops
+    C13_MIN   = 180.0   # K — normalization min
+    C13_MAX   = 320.0   # K — normalization max
+    C09_MIN   = 180.0
+    C09_MAX   = 320.0
+
+    def __init__(
+        self,
+        nc_files: list,
+        img_size: int = 64,
+        patches_per_file: int = 50,
+        seed: int = 42,
+    ) -> None:
+        self.img_size = img_size
+        self.rng = np.random.default_rng(seed)
+        self.samples = []   # list of (radar_patch, sat_patch, label)
+        self._load(nc_files, patches_per_file)
+
+    def _load(self, nc_files, patches_per_file):
+        import netCDF4 as nc_lib
+        for fpath in nc_files:
+            try:
+                with nc_lib.Dataset(fpath, "r") as ds:
+                    c02 = np.array(ds.variables["CMI_C02"][:], dtype=np.float32)
+                    c09 = np.array(ds.variables["CMI_C09"][:], dtype=np.float32)
+                    c13 = np.array(ds.variables["CMI_C13"][:], dtype=np.float32)
+            except Exception as e:
+                print(f"[WARNING] Skipping {fpath}: {e}")
+                continue
+
+            H, W = c02.shape
+            sz = self.img_size
+            if H < sz or W < sz:
+                continue
+
+            # Normalise channels to [0, 1]
+            c02 = np.clip(c02, 0.0, 1.3) / 1.3
+            c09_n = (np.clip(c09, self.C09_MIN, self.C09_MAX) - self.C09_MIN) / (self.C09_MAX - self.C09_MIN)
+            c09_n = 1.0 - c09_n   # invert: cold (moist) → high value
+            c13_n = (np.clip(c13, self.C13_MIN, self.C13_MAX) - self.C13_MIN) / (self.C13_MAX - self.C13_MIN)
+            c13_n = 1.0 - c13_n   # invert: cold tops → high storm signal
+
+            for _ in range(patches_per_file):
+                r = self.rng.integers(0, H - sz)
+                c = self.rng.integers(0, W - sz)
+
+                p02  = c02[r:r+sz, c:c+sz]
+                p09  = c09_n[r:r+sz, c:c+sz]
+                p13  = c13_n[r:r+sz, c:c+sz]
+                p13_raw = c13[r:r+sz, c:c+sz]
+
+                # Physical labels
+                storm_prob  = float((p13_raw < self.C13_COLD).mean())
+                rainfall    = float(0.6 * storm_prob + 0.4 * float(p02.mean()))
+                flood_risk  = float(0.5 * storm_prob + 0.3 * float(p09.mean()) + 0.2 * float(p02.mean()))
+
+                # radar-like channel = IR cold-top signal; sat = visible + wv + IR
+                radar_patch = p13[np.newaxis].astype(np.float32)         # (1, H, W)
+                sat_patch   = np.stack([p02, p09, p13], axis=0).astype(np.float32)  # (3, H, W)
+                label       = np.array([storm_prob, rainfall, flood_risk], dtype=np.float32)
+                self.samples.append((radar_patch, sat_patch, label))
+
+        print(f"[INFO] RealGOESDataset: {len(self.samples)} patches from {len(nc_files)} files")
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        radar, sat, label = self.samples[idx]
+        return torch.from_numpy(radar), torch.from_numpy(sat), torch.from_numpy(label)
+
+
+# ---------------------------------------------------------------------------
 # Synthetic dataset (used when real data is unavailable)
 # ---------------------------------------------------------------------------
 
@@ -310,6 +404,7 @@ def train(
     output_dir: str = "results",
     pretrained: bool = False,
     freeze_backbone: bool = False,
+    data_dir: str = None,
 ) -> None:
     """
     Full training pipeline for the weather perception model.
@@ -332,9 +427,19 @@ def train(
     print(f"[INFO] Device: {device}")
 
     # ----- Dataset -----
-    dataset = SyntheticWeatherDataset(
-        n_samples=n_samples, img_size=img_size, seed=seed
-    )
+    if data_dir and os.path.isdir(data_dir):
+        from pathlib import Path
+        nc_files = sorted(str(p) for p in Path(data_dir).rglob("*.nc"))
+        if nc_files:
+            print(f"[INFO] Using real GOES data: {len(nc_files)} files from {data_dir}")
+            dataset = RealGOESDataset(nc_files=nc_files, img_size=img_size, patches_per_file=100, seed=seed)
+        else:
+            print(f"[WARNING] No .nc files found in {data_dir}, falling back to synthetic data.")
+            dataset = SyntheticWeatherDataset(n_samples=n_samples, img_size=img_size, seed=seed)
+    else:
+        dataset = SyntheticWeatherDataset(
+            n_samples=n_samples, img_size=img_size, seed=seed
+        )
     val_size = int(0.2 * len(dataset))
     train_size = len(dataset) - val_size
     train_ds, val_ds = random_split(
@@ -421,6 +526,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output_dir", type=str, default="results")
     parser.add_argument("--pretrained", action="store_true")
     parser.add_argument("--freeze_backbone", action="store_true")
+    parser.add_argument("--data_dir", type=str, default=None,
+                        help="Path to folder containing real GOES .nc files.")
     return parser.parse_args()
 
 
@@ -437,4 +544,5 @@ if __name__ == "__main__":
         output_dir=args.output_dir,
         pretrained=args.pretrained,
         freeze_backbone=args.freeze_backbone,
+        data_dir=args.data_dir,
     )

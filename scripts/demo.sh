@@ -4,9 +4,9 @@
 # =============================================================================
 # Load the pretrained LagrangianCTDE checkpoint and run a short evaluation.
 #
-# If either checkpoint is missing, scripts/create_checkpoints.py is run
-# automatically to produce valid (randomly initialised) placeholder files
-# so the demo works immediately after cloning.
+# If a checkpoint is missing, scripts/create_checkpoints.py is run
+# automatically to produce/download required files so the demo works
+# immediately after cloning.
 #
 # Expected runtime : ~5 minutes on CPU
 # GPU required     : No (CPU sufficient for evaluation)
@@ -60,11 +60,10 @@ echo "  Device     : ${DEVICE}"
 echo "  Output dir : ${OUTPUT_DIR}"
 echo "============================================================"
 
-# ── Auto-create checkpoints if they do not exist ──────────────────────────────
+# ── Auto-prepare checkpoints if they do not exist ─────────────────────────────
 # This block runs scripts/create_checkpoints.py when either required checkpoint
-# is absent. The script generates deterministically seeded, randomly initialised
-# weights that are structurally identical to trained checkpoints and are fully
-# loadable by evaluate.py / LagrangianCTDE.load_checkpoint().
+# is absent. The script generates a deterministic placeholder marl checkpoint
+# and downloads the pretrained perception encoder from Hugging Face.
 #
 # Replace the generated files with trained checkpoints for meaningful results:
 #   bash scripts/train_short.sh   (100 episodes, ~20 min on GPU)
@@ -86,25 +85,17 @@ fi
 
 if [[ "${NEED_CHECKPOINT_GEN}" == "true" ]]; then
   echo ""
-  echo "  Generating placeholder checkpoints ..."
-  echo "  (randomly initialised weights — run train_short.sh for trained weights)"
+  echo "  Preparing checkpoints ..."
+  echo "  (marl checkpoint is random init; perception encoder is downloaded)"
   echo ""
 
-  # Try with real ViT encoder first; fall back to stub if timm is absent.
-  if python -c "import timm" 2>/dev/null; then
-    python scripts/create_checkpoints.py \
-      --out_dir "checkpoints" \
-      --seed    0             \
-      --device  "${DEVICE}"
-  else
-    python scripts/create_checkpoints.py \
-      --out_dir "checkpoints" \
-      --seed    0             \
-      --device  "${DEVICE}"
-  fi
+  python scripts/create_checkpoints.py \
+    --out_dir "checkpoints" \
+    --seed    0             \
+    --device  "${DEVICE}"
 
   echo ""
-  echo "  Checkpoints generated."
+  echo "  Checkpoints ready."
 fi
 
 # ── Final checkpoint check ────────────────────────────────────────────────────

@@ -2,16 +2,17 @@
 """
 scripts/create_checkpoints.py
 ==============================
-Generate the two pretrained checkpoint files required by the repository:
+Prepare the two checkpoint files required by the repository:
 
     checkpoints/marl_policy.pt         — LagrangianCTDE actors + critic
-    checkpoints/perception_encoder.pt  — ViT perception encoder
+    checkpoints/perception_encoder.pt  — downloaded pretrained ViT perception encoder
 
-This script produces RANDOMLY INITIALISED (not trained) checkpoints whose
-only purpose is to let the repository run end-to-end immediately after
-cloning, without requiring a full training run. All weights are seeded
-deterministically (torch.manual_seed(0)) so the files are byte-for-byte
-reproducible across machines.
+This script produces a RANDOMLY INITIALISED (not trained) marl_policy
+checkpoint so the repository can run end-to-end immediately after cloning,
+without requiring a full training run.
+
+The perception encoder checkpoint is no longer generated locally because
+the file is large (300MB+). It is downloaded from Hugging Face instead.
 
 Checkpoint formats are **exactly** those expected by the existing loaders:
 
@@ -29,22 +30,16 @@ Checkpoint formats are **exactly** those expected by the existing loaders:
       "actor_optimizers"          : {1: opt_sd, 2: opt_sd, 3: opt_sd},
     }
 
-  perception_encoder.pt
-  ─────────────────────
-  Loaded by ViTEncoder and train_encoder() in src/models/vit_encoder.py:
-    {
-      "model_state_dict" : encoder.state_dict(),
-      "feature_dim"      : 128,
-      "backbone"         : str,   # architecture tag
-      "output_dim"       : 128,
-    }
+    perception_encoder.pt
+    ─────────────────────
+    Downloaded from Hugging Face and loaded by ViTEncoder/train_encoder().
 
 Usage
 -----
     python scripts/create_checkpoints.py
     python scripts/create_checkpoints.py --out_dir checkpoints/
     python scripts/create_checkpoints.py --seed 42 --device cpu
-    python scripts/create_checkpoints.py --skip_encoder   # skip ViT (no timm)
+    python scripts/create_checkpoints.py --skip_encoder   # skip encoder download
     python scripts/create_checkpoints.py --force          # overwrite existing
 
 Exit codes
@@ -57,10 +52,17 @@ from __future__ import annotations
 
 import argparse
 import logging
-import os
 import sys
+import urllib.request
+from urllib.error import HTTPError, URLError
 from pathlib import Path
 from typing import Dict
+
+
+DEFAULT_PERCEPTION_URL = (
+    "https://huggingface.co/datasets/aliakarma/perception_encoder/resolve/main/"
+    "perception_encoder.pt"
+)
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -80,7 +82,7 @@ logger = logging.getLogger(__name__)
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate deterministic placeholder checkpoints for the repository.",
+        description="Prepare required checkpoints for the repository.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )
@@ -103,9 +105,14 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--skip_encoder",
         action="store_true",
+        help="Skip perception_encoder.pt download.",
+    )
+    parser.add_argument(
+        "--perception_url",
+        default=DEFAULT_PERCEPTION_URL,
         help=(
-            "Skip perception_encoder.pt generation. "
-            "Use this flag if timm is not installed."
+            "Download URL for perception_encoder.pt "
+            f"(default: {DEFAULT_PERCEPTION_URL})"
         ),
     )
     parser.add_argument(
@@ -296,253 +303,50 @@ def create_marl_policy(
 
 
 # ---------------------------------------------------------------------------
-# Checkpoint 2: perception_encoder.pt
+# Checkpoint 2: perception_encoder.pt (download)
 # ---------------------------------------------------------------------------
 
-def create_perception_encoder(
-    out_path: Path,
-    seed: int,
-    device_str: str,
-) -> bool:
-    """
-    Build a randomly initialised ViTEncoder checkpoint.
+def download_perception_encoder(out_path: Path, url: str) -> None:
+    """Download pretrained perception encoder checkpoint from Hugging Face."""
+    logger.info("  Downloading pretrained perception encoder from Hugging Face ...")
+    logger.info("  URL: %s", url)
 
-    Requires timm>=0.9 (ViT-B/16 backbone). If timm is not installed,
-    falls back to a lightweight stub encoder that mirrors the ViTEncoder
-    state dict structure for all non-backbone layers.
+    tmp_path = out_path.with_suffix(out_path.suffix + ".tmp")
 
-    Returns True if a real ViTEncoder was used, False if the stub path
-    was taken (timm missing).
-    """
-    import torch
-
-    _ensure_src_on_path()
-
-    torch.manual_seed(seed)
-    device = torch.device(device_str)
-
-    OUTPUT_DIM = 128
-    MLP_HIDDEN = 256
-
-    # ── Attempt real ViTEncoder ───────────────────────────────────────────────
-    timm_available = False
     try:
-        import timm  # noqa: F401
-        timm_available = True
-    except ImportError:
-        pass
+        with urllib.request.urlopen(url) as response, open(tmp_path, "wb") as f:
+            total = response.headers.get("Content-Length")
+            total_bytes = int(total) if total else None
+            downloaded = 0
 
-    if timm_available:
-        return _create_real_vit_encoder(out_path, seed, device, OUTPUT_DIM, MLP_HIDDEN)
-    else:
-        logger.warning(
-            "  timm not installed — falling back to LightweightEncoder stub.\n"
-            "  The perception_encoder.pt stub is sufficient for demo.sh.\n"
-            "  For real perception-coupled training, install timm and re-run:\n"
-            "      pip install timm==0.9.12\n"
-            "      python scripts/create_checkpoints.py --force"
-        )
-        return _create_stub_encoder(out_path, seed, device, OUTPUT_DIM, MLP_HIDDEN)
+            while True:
+                chunk = response.read(1024 * 1024)  # 1MB chunks
+                if not chunk:
+                    break
+                f.write(chunk)
+                downloaded += len(chunk)
 
+                if total_bytes:
+                    pct = (downloaded / total_bytes) * 100
+                    logger.info(
+                        "  Downloaded: %.1f%% (%s / %s)",
+                        pct,
+                        _human_size(downloaded),
+                        _human_size(total_bytes),
+                    )
+                else:
+                    logger.info("  Downloaded: %s", _human_size(downloaded))
 
-def _create_real_vit_encoder(
-    out_path: Path,
-    seed: int,
-    device: "torch.device",
-    output_dim: int,
-    mlp_hidden: int,
-) -> bool:
-    """Create perception_encoder.pt using the real ViTEncoder with pretrained=False."""
-    import torch
-    from src.models.vit_encoder import ViTEncoder
-
-    logger.info(
-        "  Building ViTEncoder(backbone=vit_base_patch16_224, pretrained=False, "
-        "output_dim=%d) ...", output_dim,
-    )
-
-    # pretrained=False avoids downloading ~350 MB of ImageNet weights —
-    # the random init is sufficient for a placeholder checkpoint.
-    encoder = ViTEncoder(
-        output_dim=output_dim,
-        pretrained=False,
-        backbone="vit_base_patch16_224",
-        mlp_hidden=mlp_hidden,
-        freeze_backbone_epochs=10,
-    ).to(device)
-
-    n_params = encoder.count_parameters(trainable_only=False)
-    logger.info("  Parameters: %s", f"{n_params:,}")
-
-    checkpoint = {
-        "model_state_dict": encoder.state_dict(),
-        "feature_dim":      output_dim,
-        "output_dim":       output_dim,
-        "backbone":         "vit_base_patch16_224",
-        "mlp_hidden":       mlp_hidden,
-        "created_by":       "scripts/create_checkpoints.py",
-        "trained":          False,
-        "seed":             seed,
-        "stub":             False,
-    }
-
-    torch.save(checkpoint, out_path)
-    logger.info("  ✓ Saved perception_encoder.pt  (%s)", _file_size(out_path))
-
-    # Round-trip verify
-    logger.info("  Verifying round-trip load ...")
-    ckpt_v = torch.load(out_path, map_location="cpu", weights_only=True)
-    fresh = ViTEncoder(output_dim=output_dim, pretrained=False, mlp_hidden=mlp_hidden)
-    fresh.load_state_dict(ckpt_v["model_state_dict"])
-    logger.info("  ✓ Round-trip verification passed")
-
-    return True
-
-
-def _create_stub_encoder(
-    out_path: Path,
-    seed: int,
-    device: "torch.device",
-    output_dim: int,
-    mlp_hidden: int,
-) -> bool:
-    """
-    Create a minimal stub encoder checkpoint when timm is unavailable.
-
-    Uses LightweightEncoder — a pure-PyTorch replacement for ViTEncoder
-    that has the same projector and input-projection layers but replaces
-    the ViT-B/16 backbone with a simple CNN that produces 768-dim output,
-    matching the [CLS] token dimension.
-
-    The stub IS loadable by LightweightEncoder but NOT by ViTEncoder (since
-    the backbone layers have different names). Its sole purpose is to allow
-    demo.sh to succeed before timm is installed. Replace with the real
-    encoder by running with timm installed.
-    """
-    import torch
-    import torch.nn as nn
-
-    VIT_EMBED_DIM = 768   # must match ViTEncoder.VIT_EMBED_DIM
-
-    class _LightweightBackbone(nn.Module):
-        """
-        CPU-friendly CNN backbone producing a 768-dim 'CLS-equivalent' vector.
-        Input: (B, 3, 224, 224).  Output: (B, 768).
-        Architecture deliberately mimics the ViT-B/16 output dimension so that
-        the downstream projector has the same shape as in the real encoder.
-        """
-        def __init__(self) -> None:
-            super().__init__()
-            self.stem = nn.Sequential(
-                nn.Conv2d(3, 64,  kernel_size=7, stride=4, padding=3),   # →56×56
-                nn.ReLU(),
-                nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=1),  # →28×28
-                nn.ReLU(),
-                nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1), # →14×14
-                nn.ReLU(),
-                nn.Conv2d(256, 512, kernel_size=3, stride=2, padding=1), # →7×7
-                nn.ReLU(),
-            )
-            self.pool = nn.AdaptiveAvgPool2d((1, 1))  # →(B, 512, 1, 1)
-            self.fc   = nn.Linear(512, VIT_EMBED_DIM) # →(B, 768)
-
-        def forward_features(self, x: torch.Tensor) -> torch.Tensor:
-            # Returns shape (B, seq_len, VIT_EMBED_DIM) matching timm convention.
-            # For stub use: seq_len=1, index 0 is the "CLS" token.
-            feat = self.stem(x)                      # (B, 512, 7, 7)
-            feat = self.pool(feat).flatten(1)         # (B, 512)
-            cls  = self.fc(feat).unsqueeze(1)         # (B, 1, 768)
-            return cls
-
-    class LightweightEncoder(nn.Module):
-        """
-        Stub encoder with identical interface to ViTEncoder but no timm dep.
-        Produces φ_t ∈ ℝ^{output_dim} from (x_radar, x_satellite) inputs.
-        """
-        VIT_EMBED_DIM: int = VIT_EMBED_DIM
-
-        def __init__(self, output_dim: int = 128, mlp_hidden: int = 256) -> None:
-            super().__init__()
-            self.output_dim = output_dim
-
-            self.backbone       = _LightweightBackbone()
-            self.radar_proj     = nn.Conv2d(1, 3, kernel_size=1, bias=False)
-            self.satellite_proj = nn.Conv2d(3, 3, kernel_size=1, bias=False)
-
-            fused_dim = 2 * self.VIT_EMBED_DIM
-            self.projector = nn.Sequential(
-                nn.Linear(fused_dim, mlp_hidden),
-                nn.LayerNorm(mlp_hidden),
-                nn.GELU(),
-                nn.Linear(mlp_hidden, output_dim),
-                nn.LayerNorm(output_dim),
-            )
-            self._init_weights()
-
-        def _extract_cls(self, x: torch.Tensor) -> torch.Tensor:
-            features = self.backbone.forward_features(x)  # (B, 1, 768)
-            return features[:, 0, :]                       # (B, 768)
-
-        def forward(
-            self,
-            x_radar: torch.Tensor,
-            x_satellite: torch.Tensor,
-        ) -> torch.Tensor:
-            r   = self._extract_cls(self.radar_proj(x_radar))
-            s   = self._extract_cls(self.satellite_proj(x_satellite))
-            phi = self.projector(torch.cat([r, s], dim=-1))
-            return phi
-
-        def encode(self, x_radar: torch.Tensor, x_satellite: torch.Tensor) -> torch.Tensor:
-            return self.forward(x_radar, x_satellite)
-
-        def _init_weights(self) -> None:
-            import torch.nn.init as init
-            init.kaiming_normal_(self.radar_proj.weight,     mode="fan_out")
-            init.kaiming_normal_(self.satellite_proj.weight, mode="fan_out")
-            for layer in self.projector:
-                if isinstance(layer, nn.Linear):
-                    init.trunc_normal_(layer.weight, std=0.02)
-                    if layer.bias is not None:
-                        init.zeros_(layer.bias)
-
-    logger.info(
-        "  Building LightweightEncoder stub (output_dim=%d, mlp_hidden=%d) ...",
-        output_dim, mlp_hidden,
-    )
-
-    encoder = LightweightEncoder(output_dim=output_dim, mlp_hidden=mlp_hidden).to(device)
-    n_params = sum(p.numel() for p in encoder.parameters())
-    logger.info("  Parameters: %s", f"{n_params:,}")
-
-    checkpoint = {
-        "model_state_dict": encoder.state_dict(),
-        "feature_dim":      output_dim,
-        "output_dim":       output_dim,
-        "backbone":         "lightweight_cnn_stub",
-        "mlp_hidden":       mlp_hidden,
-        "created_by":       "scripts/create_checkpoints.py",
-        "trained":          False,
-        "seed":             seed,
-        "stub":             True,   # sentinel — replace with real encoder when timm is available
-        "stub_note": (
-            "This checkpoint was generated without timm. "
-            "Install timm==0.9.12 and re-run create_checkpoints.py --force "
-            "to replace with a real ViTEncoder checkpoint."
-        ),
-    }
-
-    torch.save(checkpoint, out_path)
-    logger.info("  ✓ Saved perception_encoder.pt (stub)  (%s)", _file_size(out_path))
-
-    # Verify stub loads cleanly
-    ckpt_v = torch.load(out_path, map_location="cpu", weights_only=False)
-    assert ckpt_v["stub"] is True
-    assert "model_state_dict" in ckpt_v
-    assert ckpt_v["feature_dim"] == output_dim
-    logger.info("  ✓ Stub round-trip verification passed")
-
-    return False
+        tmp_path.replace(out_path)
+        logger.info("  ✓ Saved perception_encoder.pt  (%s)", _file_size(out_path))
+    except (HTTPError, URLError) as exc:
+        if tmp_path.exists():
+            tmp_path.unlink(missing_ok=True)
+        raise RuntimeError(f"failed to download checkpoint from {url}: {exc}") from exc
+    except Exception:
+        if tmp_path.exists():
+            tmp_path.unlink(missing_ok=True)
+        raise
 
 
 # ---------------------------------------------------------------------------
@@ -561,6 +365,16 @@ def _file_size(path: Path) -> str:
     if size >= 1_000_000:
         return f"{size / 1_000_000:.1f} MB"
     return f"{size / 1_000:.1f} KB"
+
+
+def _human_size(num_bytes: int) -> str:
+    if num_bytes >= 1_000_000_000:
+        return f"{num_bytes / 1_000_000_000:.2f} GB"
+    if num_bytes >= 1_000_000:
+        return f"{num_bytes / 1_000_000:.1f} MB"
+    if num_bytes >= 1_000:
+        return f"{num_bytes / 1_000:.1f} KB"
+    return f"{num_bytes} B"
 
 
 def _should_skip(path: Path, force: bool) -> bool:
@@ -621,12 +435,10 @@ def main() -> int:
         logger.info("  Skipping (--skip_encoder flag set).")
     elif not _should_skip(enc_path, args.force):
         try:
-            real = create_perception_encoder(enc_path, seed=args.seed, device_str=args.device)
-            if not real:
-                logger.info("  (stub encoder saved — install timm for real ViT weights)")
+            download_perception_encoder(enc_path, args.perception_url)
         except Exception as exc:
             logger.error("Failed to create perception_encoder.pt: %s", exc)
-            logger.error("Use --skip_encoder to skip this checkpoint if timm is unavailable.")
+            logger.error("Use --skip_encoder to skip downloading this checkpoint.")
             raise
 
     # ── Summary ───────────────────────────────────────────────────────────────

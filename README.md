@@ -447,8 +447,12 @@ If violation rate stays above 0.10 after episode 500, increase
 
 ## Full Datasets (Perception Encoder Retraining)
 
-The pretrained `checkpoints/perception_encoder.pt` is included —
-**no dataset downloads are needed** to run MARL training or evaluation.
+The pretrained `checkpoints/perception_encoder.pt` is hosted on Hugging Face
+and downloaded by `scripts/create_checkpoints.py` when missing:
+
+`https://huggingface.co/datasets/aliakarma/perception_encoder/resolve/main/perception_encoder.pt`
+
+No dataset downloads are needed to run MARL training or evaluation.
 
 To **retrain the perception encoder from scratch**, all three datasets
 described in Section 4.2 of the paper are required. The encoder is a

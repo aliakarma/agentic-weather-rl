@@ -5,7 +5,7 @@
   "reward_std": 0.027730403813842005,
   "violation_rate_mean": 1.0,
   "violation_rate_std": 0.0,
-  "eval_time_sec": 5.446612119674683,
+  "eval_time_sec": 5.852341175079346,
   "decision_accuracy_1_mean": 0.0,
   "decision_accuracy_1_std": 0.0,
   "decision_accuracy_2_mean": 0.010000000000000002,

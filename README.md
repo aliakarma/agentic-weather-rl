@@ -31,6 +31,21 @@ The system follows a **three-layer architecture** (Paper Sections 3.1–3.5):
 
 ---
 
+## Dataset
+
+The dataset is hosted on HuggingFace.
+
+Download automatically using:
+
+```python
+from datasets import load_dataset
+
+dataset = load_dataset("aliakarma/SEVIR")
+
+```
+
+---
+
 ## Quick Start — 5 Minutes
 
 No training needed. Evaluate the pretrained model immediately:

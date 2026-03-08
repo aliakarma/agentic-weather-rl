@@ -1,0 +1,15 @@
+{
+  "algo_name": "lagrangian_ctde_demo",
+  "n_episodes": 20,
+  "reward_mean": -8.640970421583877,
+  "reward_std": 0.027730403813842005,
+  "violation_rate_mean": 1.0,
+  "violation_rate_std": 0.0,
+  "eval_time_sec": 5.446612119674683,
+  "decision_accuracy_1_mean": 0.0,
+  "decision_accuracy_1_std": 0.0,
+  "decision_accuracy_2_mean": 0.010000000000000002,
+  "decision_accuracy_2_std": 1.734723475976807e-18,
+  "decision_accuracy_3_mean": 0.09250000000000001,
+  "decision_accuracy_3_std": 0.006982120021884472
+}

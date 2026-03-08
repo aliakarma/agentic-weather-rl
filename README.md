@@ -51,7 +51,7 @@ dataset = load_dataset("aliakarma/SEVIR")
 No training needed. Evaluate the pretrained model immediately:
 
 ```bash
-git clone https://github.com/your-username/risk-aware-marl-cloudburst.git
+git clone https://github.com/aliakarma/agentic-weather-rl.git
 cd risk-aware-marl-cloudburst
 pip install -r requirements.txt
 bash scripts/demo.sh

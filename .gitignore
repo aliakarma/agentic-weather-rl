@@ -3,6 +3,7 @@ data/full_dataset/
 
 # large checkpoints
 *.pt
+!checkpoints/*.pt
 
 # python
 __pycache__/

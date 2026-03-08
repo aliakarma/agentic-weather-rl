@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- LOGO / BANNER -->
-<img src="https://raw.githubusercontent.com/aliakarma/agentic-weather-rl/main/data/assets/banner.png" alt="agentic-weather-rl Banner" width="100%" onerror="this.style.display='none'"/>
+<img src="https://raw.githubusercontent.com/Hammad914/agentic-weather-rl/main/data/assets/banner.png" alt="agentic-weather-rl Banner" width="100%" onerror="this.style.display='none'"/>
 
 # 🌪️ Multi-Modal RL Weather Emergency Response
 
@@ -9,7 +9,7 @@
 
 <br/>
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/demo_pipeline.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Hammad914/agentic-weather-rl/blob/main/notebooks/demo_pipeline.ipynb)
 &nbsp;
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/downloads/release/python-3100/)
 &nbsp;
@@ -19,13 +19,13 @@
 &nbsp;
 [![License: MIT](https://img.shields.io/badge/License-MIT-F7DF1E?style=flat&logo=opensourceinitiative&logoColor=black)](LICENSE)
 &nbsp;
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat&logo=github)](https://github.com/aliakarma/agentic-weather-rl/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat&logo=github)](https://github.com/Hammad914/agentic-weather-rl/pulls)
 
 
 
 > **"Multi-Modal Reinforcement Learning for Autonomous Extreme Weather Emergency Response"**
-> 
-> *A three-layer agentic AI framework combining multi-modal environmental perception,*  
+>
+> *A three-layer agentic AI framework combining multi-modal environmental perception,*
 > *reinforcement learning policy optimisation, and automated emergency action orchestration.*
 
 </div>
@@ -41,6 +41,7 @@
 - [Datasets](#-datasets)
 - [Training Pipeline](#-training-pipeline)
 - [Results](#-results)
+- [Test on Your Own Image](#-test-on-your-own-image)
 - [Reproducibility](#-reproducibility)
 - [License](#-license)
 
@@ -54,11 +55,11 @@ This repository implements a **three-layer multi-agent AI architecture** for int
 
 | Feature | Detail |
 |---|---|
-| 🧠 **Perception** | Fused CNN / Vision Transformer encoder on radar + satellite imagery |
-| 🤖 **Decision Making** | PPO-trained RL agent with disaster-aware reward shaping |
+| 🧠 **Perception** | ResNet50 CNN encoder trained on real GOES-16 satellite NetCDF4 data |
+| 🤖 **Decision Making** | PPO-trained RL agent with disaster-aware reward shaping (1003 episodes) |
 | ⚡ **Action Execution** | Agentic orchestration layer with simulated emergency service APIs |
-| 📡 **Data Sources** | NEXRAD radar · GOES satellite · SEVIR storm events |
-| 🔁 **End-to-End** | Full perception → decision → action pipeline in a single inference pass |
+| 📡 **Data Sources** | NEXRAD radar · GOES-16 satellite (real `.nc` files) · SEVIR storm events |
+| 🔁 **End-to-End** | Full perception → decision → action pipeline, testable on any image |
 | 🔬 **Reproducible** | Seeded training, versioned configs, public dataset integration |
 
 ---
@@ -71,10 +72,10 @@ The system is decomposed into three tightly integrated layers:
 ╔══════════════════════════════════════════════════════════════════╗
 ║              🛰️  LAYER 1 — Multi-Modal Perception               ║
 ║                                                                  ║
-║   📡 Radar (NEXRAD)        🌍 Satellite (GOES / SEVIR)          ║
+║   📡 Radar (NEXRAD)        🌍 Satellite (GOES-16 / SEVIR)       ║
 ║           └───────────────────┘                                  ║
 ║                         ↓                                        ║
-║            Multi-Modal Encoder  (CNN / ViT)                      ║
+║        ResNet50 CNN  (trained on real GOES-16 NetCDF4)           ║
 ║                         ↓                                        ║
 ║   storm_probability │ rainfall_intensity │ flood_risk_score      ║
 ╚══════════════════════════════════╦═══════════════════════════════╝
@@ -84,7 +85,7 @@ The system is decomposed into three tightly integrated layers:
 ║                                                                  ║
 ║   State: [storm_prob, rainfall, flood_risk, regional_risk]       ║
 ║                         ↓                                        ║
-║              PPO Policy  (Stable-Baselines3)                     ║
+║         PPO Policy  (Stable-Baselines3 · 1003 episodes)          ║
 ║                         ↓                                        ║
 ║     🟢 No Action │ 🟡 Warning │ 🟠 Emergency │ 🔴 Evacuation   ║
 ╚══════════════════════════════════╦═══════════════════════════════╝
@@ -104,48 +105,58 @@ The system is decomposed into three tightly integrated layers:
 ## 📁 Repository Structure
 
 ```
-weather-rl-emergency-system/
+agentic-weather-rl/
 │
 ├── 📄 README.md
 ├── 📦 requirements.txt
 ├── 🐍 environment.yml
 ├── ⚖️  LICENSE
+├── 🧪 test_on_image.py               # ▶️ Run inference on any image
 │
 ├── 🖼️  architecture/
-│   └── system_architecture.png          # Architecture diagram
+│   └── system_architecture.png       # Architecture diagram
 │
 ├── 📊 data/
-│   └── dataset_links.md                 # Dataset download instructions
+│   └── dataset_links.md              # Dataset download instructions
 │
 ├── ⚙️  preprocessing/
-│   ├── process_radar_data.py            # NEXRAD radar preprocessing
-│   └── process_satellite_images.py      # GOES/SEVIR satellite preprocessing
+│   ├── process_radar_data.py         # NEXRAD radar preprocessing
+│   └── process_satellite_images.py   # GOES/SEVIR satellite preprocessing
 │
 ├── 🧠 models/
-│   ├── cnn_weather_model.py             # CNN-based perception model
-│   ├── transformer_weather_model.py     # ViT-based perception model
-│   └── multimodal_encoder.py            # Unified multi-modal encoder
+│   ├── cnn_weather_model.py          # ResNet50-based perception model
+│   ├── transformer_weather_model.py  # ViT-based perception model
+│   └── multimodal_encoder.py         # Unified multi-modal encoder
 │
 ├── 🤖 rl_agent/
-│   ├── environment.py                   # Custom Gym environment
-│   ├── agent_ppo.py                     # PPO agent wrapper
-│   └── training.py                      # RL training loop
+│   ├── environment.py                # Custom Gym environment
+│   ├── agent_ppo.py                  # PPO agent wrapper
+│   └── training.py                   # RL training loop
 │
 ├── 🚨 orchestration/
-│   └── emergency_action_simulator.py    # Simulated emergency actions
+│   └── emergency_action_simulator.py # Simulated emergency actions
 │
 ├── 🔬 experiments/
-│   ├── train_weather_model.py           # Perception model training
-│   ├── train_rl_agent.py                # RL agent training
-│   └── evaluate_system.py              # End-to-end evaluation
+│   ├── train_weather_model.py        # Perception model training
+│   ├── train_rl_agent.py             # RL agent training
+│   └── evaluate_system.py           # End-to-end evaluation
 │
 ├── 📈 results/
-│   ├── reward_curve_example.png
-│   ├── accuracy_plot_example.png
-│   └── experiment_results_template.csv
+│   ├── best_model/                   # Saved best perception model
+│   ├── ppo_agent.zip                 # Trained PPO agent (1003 episodes)
+│   ├── reward_curve.png              # RL training reward curve
+│   ├── accuracy_plot.png             # Perception model accuracy plot
+│   ├── weather_model_accuracy.png    # Training/validation curves
+│   ├── perception_training_log.csv   # Per-epoch training metrics
+│   ├── rl_training_log.csv           # Per-episode RL rewards
+│   └── experiment_results.csv        # Evaluation results
+│
+├── 🗂️  testData/                     # Sample test images
+│   ├── storm1.jpg  storm2.jpg
+│   └── storm3.jpg  storm4.jpg
 │
 └── 📓 notebooks/
-    └── demo_pipeline.ipynb              # ▶️ Full pipeline demo
+    └── demo_pipeline.ipynb           # ▶️ Full pipeline demo
 ```
 
 ---
@@ -155,7 +166,7 @@ weather-rl-emergency-system/
 ### Option 1 — pip
 
 ```bash
-git clone https://github.com/aliakarma/agentic-weather-rl.git
+git clone https://github.com/Hammad914/agentic-weather-rl.git
 cd agentic-weather-rl
 pip install -r requirements.txt
 ```
@@ -176,9 +187,6 @@ cd notebooks
 jupyter notebook demo_pipeline.ipynb
 ```
 
-> ⚠️ The demo notebook uses **synthetic data** and requires no dataset downloads.  
-> Full training pipelines are in `experiments/`.
-
 ---
 
 ## 📡 Datasets
@@ -193,13 +201,14 @@ Three publicly available meteorological datasets are used. All are freely access
 - **Format:** HDF5 · multi-channel imagery
 - **Used for:** Perception model training — storm event classification
 
-### 🛰️ GOES — Geostationary Operational Environmental Satellite
+### 🛰️ GOES-16 — Geostationary Operational Environmental Satellite
 
-> Continuous geostationary satellite imagery capturing cloud formations and large-scale atmospheric structures.
+> Continuous geostationary satellite imagery. Real GOES-16 MCMIP NetCDF4 files are used to extract three channels: C02 (visible reflectance), C09 (mid-level water vapour), C13 (clean IR — cold cloud tops indicate deep convection).
 
 - **Source:** [AWS Open Data — NOAA GOES](https://registry.opendata.aws/noaa-goes/)
 - **Format:** NetCDF4 · multi-band spectral imagery
-- **Used for:** Cloud pattern and temperature structure input
+- **Used for:** Cloud pattern, temperature structure, storm probability estimation
+- **Local data:** `weather-rl/goes/2025_067_01/` (6 × MCMIP files included)
 
 ### 📻 NOAA NEXRAD — Next Generation Weather Radar
 
@@ -208,6 +217,7 @@ Three publicly available meteorological datasets are used. All are freely access
 - **Source:** [AWS Open Data — NOAA NEXRAD](https://registry.opendata.aws/noaa-nexrad/)
 - **Format:** Level-2 binary · reflectivity in dBZ
 - **Used for:** Radar reflectivity and rainfall intensity input
+- **Local data:** `weather-rl/nexrad/KIND_20230101/` (full day of scans included)
 
 > 📂 See [`data/dataset_links.md`](data/dataset_links.md) for detailed download, extraction, and directory setup instructions.
 
@@ -215,7 +225,7 @@ Three publicly available meteorological datasets are used. All are freely access
 
 ## 🔁 Training Pipeline
 
-Follow these four steps to reproduce the full experimental pipeline.
+Follow these steps to reproduce the full experimental pipeline.
 
 ### Step 1 — Preprocess Data
 
@@ -234,13 +244,13 @@ python preprocessing/process_satellite_images.py \
 ### Step 2 — Train Perception Model
 
 ```bash
-# CNN backbone
+# CNN backbone (ResNet50) — used in production
 python experiments/train_weather_model.py \
-    --model cnn --epochs 30 --batch_size 32
+    --model cnn --epochs 30 --batch_size 32 --seed 42
 
-# Vision Transformer (ViT)
+# Vision Transformer (ViT) — alternative backbone
 python experiments/train_weather_model.py \
-    --model vit --epochs 30 --batch_size 16
+    --model vit --epochs 30 --batch_size 16 --seed 42
 ```
 
 ### Step 3 — Train RL Agent
@@ -248,7 +258,7 @@ python experiments/train_weather_model.py \
 ```bash
 python experiments/train_rl_agent.py \
     --timesteps 100000 \
-    --perception_model results/best_perception_model.pth \
+    --perception_model results/best_model/best_model.zip \
     --seed 42
 ```
 
@@ -265,22 +275,82 @@ python experiments/evaluate_system.py \
 
 ## 📊 Results
 
-### 🎯 RL Agent — Decision Accuracy
+### 🧠 Perception Model — Training Performance (30 Epochs, ResNet50 CNN)
+
+The model was trained on real GOES-16 satellite data. Validation accuracy improved from **66.7%** at epoch 1 to **100%** by epoch 30.
+
+| Epoch | Val Loss | Val Accuracy |
+|:---:|:---:|:---:|
+| 1 | 0.0869 | 66.7% |
+| 5 | 0.0087 | 96.7% |
+| 12 | 0.0045 | **97.5%** |
+| 24 | 0.0042 | 99.2% |
+| 29 | 0.0041 | 99.2% |
+| **30** | **0.0036** | **100.0%** |
+
+![Accuracy Plot](results/accuracy_plot.png)
+
+### 🤖 RL Agent — Training Reward Curve (1003 Episodes)
+
+The PPO agent started with negative cumulative rewards (random policy) and consistently achieved rewards of **400–530** by the final episodes, demonstrating successful convergence.
+
+| Training Phase | Avg. Cumulative Reward |
+|---|:---:|
+| Early (episodes 1–50) | ~ -50 to +100 |
+| Mid (episodes 500–700) | ~ +300 to +400 |
+| Late (episodes 900–1003) | **~ +400 to +530** |
+
+![Reward Curve](results/reward_curve.png)
+
+### 🎯 RL Agent — Decision Accuracy (Evaluation)
 
 | Scenario | Decision Accuracy |
 |---|:---:|
-| 🌪️ Storm Warning Decision | **0.91** |
-| 🌊 Flood Risk Response | **0.87** |
-| 🚶 Evacuation Recommendation | **0.84** |
+| 🚶 Evacuation Decision | **100%** |
+| 🟢 No Action (safe conditions) | **100%** |
+| 🌪️ Storm Warning | In training |
+| 🌊 Flood Response | In training |
 
-### 🧠 Perception Model — Classification Performance
+---
 
-| Model | Accuracy | Precision | Recall | F1-Score |
-|---|:---:|:---:|:---:|:---:|
-| CNN Baseline | 0.82 | 0.80 | 0.81 | 0.80 |
-| **Vision Transformer (Fine-tuned)** | **0.89** | **0.88** | **0.87** | **0.88** |
+## 🧪 Test on Your Own Image
 
-> 📈 The Vision Transformer outperforms the CNN baseline on all metrics, demonstrating the advantage of attention-based feature extraction for complex meteorological imagery patterns.
+You can run the full pipeline on any weather image (ground photo or satellite):
+
+```bash
+python test_on_image.py --image testData/storm1.jpg
+```
+
+**Sample output:**
+```
+=======================================================
+  WEATHER RL — IMAGE PREDICTION TEST
+=======================================================
+
+[1/3] Loading image...
+[2/3] Running weather perception model...
+
+  --- Weather Predictions ---
+  Storm Probability   : 78.3%
+  Rainfall Intensity  : 61.4%
+  Flood Risk Score    : 71.2%
+  Overall Risk Level  : HIGH
+
+[3/3] Running RL disaster response agent...
+
+  --- Agent Decision ---
+  Recommended Action  : Prepare Emergency Resources
+=======================================================
+```
+
+**Arguments:**
+
+| Argument | Default | Description |
+|---|---|---|
+| `--image` | `test.jpg` | Path to input image |
+| `--weather_model` | `results/best_perception_model.pth` | Perception model checkpoint |
+| `--rl_model` | `results/ppo_agent` | Trained PPO agent path |
+| `--img_size` | `64` | Image resize resolution |
 
 ---
 
@@ -307,7 +377,6 @@ set_seed(42)
 ```
 
 ---
-
 
 ## ⚖️ License
 

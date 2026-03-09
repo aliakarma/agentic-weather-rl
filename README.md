@@ -7,10 +7,10 @@
 [![License](https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](LICENSE)
 [![NumPy](https://img.shields.io/badge/NumPy-Only-013243?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)
 
-[![Open Demo in Colab](https://img.shields.io/badge/▶%20Demo%20Notebook-Open%20in%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_demo_fixed.ipynb)
-[![Open Train in Colab](https://img.shields.io/badge/🚀%20Train%20Notebook-Open%20in%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_train_fixed.ipynb)
-[![Open Full in Colab](https://img.shields.io/badge/📊%20Full%20Reproduction-Open%20in%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_full_fixed.ipynb)
-[![Open Perception in Colab](https://img.shields.io/badge/🔬%20Perception%20Ablation-Open%20in%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_perception_fixed.ipynb)
+[![Open Demo in Colab](https://img.shields.io/badge/▶%20Demo%20Notebook-Open%20in%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_demo.ipynb)
+[![Open Train in Colab](https://img.shields.io/badge/🚀%20Train%20Notebook-Open%20in%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_train.ipynb)
+[![Open Full in Colab](https://img.shields.io/badge/📊%20Full%20Reproduction-Open%20in%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_full.ipynb)
+[![Open Perception in Colab](https://img.shields.io/badge/🔬%20Perception%20Ablation-Open%20in%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_perception.ipynb)
 
 <br/>
 

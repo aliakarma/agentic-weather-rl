@@ -53,12 +53,12 @@ The framework is benchmarked against six baselines (Heuristic, DQN, IPPO, QMIX, 
 
 | Variant | Macro F1 | Accuracy | Notes |
 |---|:---:|:---:|---|
-| Radar CNN | 0.77 | 0.76 | Radar-only baseline |
-| Multimodal CNN | 0.84 | 0.83 | Radar + satellite fusion |
-| ViT Single-stream | 0.85 | 0.84 | Radar-only ViT |
-| **ViT Multimodal** ⭐ | **0.88** | **0.87** | Two-stream ViT — **proposed** |
+| Radar CNN | 0.77 | 0.79 | Radar-only baseline |
+| Multimodal CNN | 0.84 | 0.85 | Radar + satellite fusion |
+| ViT Single-stream | 0.85 | 0.86 | Radar-only ViT |
+| **ViT Multimodal** ⭐ | **0.88** | **0.89** | Two-stream ViT — **proposed** |
 
-*All pairwise differences significant at p < 0.05 (paired t-test, 5 seeds).*
+*All pairwise differences significant at p < 0.05 (paired t-test, 5 evaluation folds).*
 
 ### Table 2 — MARL Method Comparison
 

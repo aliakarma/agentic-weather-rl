@@ -160,10 +160,10 @@ All notebooks are in `notebooks/` and self-contained — the first cell handles 
 
 | Notebook | Colab | Runtime | Description |
 |---|:---:|:---:|---|
-| `colab_demo_fixed.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_demo.ipynb) | ~5 min · CPU | Evaluate pretrained policy, verify Table 2 targets |
-| `colab_train_fixed.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_train.ipynb) | ~20 min · T4 | PPO training from scratch, training curves |
-| `colab_full_fixed.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_full.ipynb) | ~4 hrs · A100 | Full Table 2: 5 seeds × all 7 methods |
-| `colab_perception_fixed.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_perception.ipynb) | ~30 min · T4 | Table 1: 4 encoder variants + t-test significance |
+| `colab_demo.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_demo.ipynb) | ~5 min · CPU | Evaluate pretrained policy, verify Table 2 targets |
+| `colab_train.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_train.ipynb) | ~20 min · T4 | PPO training from scratch, training curves |
+| `colab_full.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_full.ipynb) | ~4 hrs · A100 | Full Table 2: 5 seeds × all 7 methods |
+| `colab_perception.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_perception.ipynb) | ~30 min · T4 | Table 1: 4 encoder variants + t-test significance |
 
 ---
 

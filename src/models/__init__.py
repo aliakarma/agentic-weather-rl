@@ -1,15 +1,8 @@
 """
-src/models
+src.models
 ==========
-Neural network model package.
-
-Public API
-----------
-    from src.models.actor       import ActorNetwork
-    from src.models.critic      import CriticNetwork
-    from src.models.vit_encoder import ViTEncoder, train_encoder, evaluate_encoder
+Public exports for the models package.
 """
-
 from src.models.actor import ActorNetwork
 from src.models.critic import CriticNetwork
 from src.models.vit_encoder import ViTEncoder, train_encoder, evaluate_encoder

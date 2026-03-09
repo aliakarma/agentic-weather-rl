@@ -1,30 +1,41 @@
 """
-Compatibility training entry point.
-
-This module preserves the `python -m src.train` interface used by scripts
-and documentation while delegating implementation to `src.orchestration.train`.
+Standalone training entry-point.
+The notebook calls agent.train() directly; this module exists for
+  `from src.train import train`
+and for CLI usage:  python -m src.train --episodes 100
 """
+from typing import List, Optional
+from src.algorithms.lagrangian_ctde import LagrangianCTDE, LagrangianCTDEConfig, EpisodeStats
+from src.environment.disaster_env import DisasterEnv
 
-from src.orchestration.train import train, _parse_args
+
+def train(
+    env: Optional[DisasterEnv] = None,
+    config: Optional[LagrangianCTDEConfig] = None,
+    n_episodes: int = 100,
+    seed: int = 42,
+    device: str = "cpu",
+) -> List[EpisodeStats]:
+    """
+    Convenience wrapper — creates agent and calls agent.train().
+    Returns training history.
+    """
+    if env is None:
+        env = DisasterEnv(seed=seed)
+    if config is None:
+        config = LagrangianCTDEConfig(n_episodes=n_episodes, seed=seed, device=device)
+    agent = LagrangianCTDE(env=env, config=config, device=device)
+    return agent.train(n_episodes=n_episodes)
 
 
 if __name__ == "__main__":
-    args = _parse_args()
-    result = train(
-        algo=args.algo,
-        config_path=args.config,
-        n_episodes=args.episodes,
-        device=args.device,
-        seed=args.seed,
-        checkpoint_dir=args.checkpoint_dir,
-        log_dir=args.log_dir,
-    )
-
-    print("\n" + "=" * 50)
-    print(f"  Algorithm        : {result['algo']}")
-    print(f"  Episodes trained : {result['episodes']}")
-    print(f"  Final reward     : {result['final_reward']:.2f}")
-    print(f"  Final VR         : {result['final_violation_rate']:.4f}")
-    print(f"  Training time    : {result['training_time_sec']:.1f}s")
-    print(f"  Checkpoint       : {result['checkpoint_path']}")
-    print("=" * 50)
+    import argparse, json
+    p = argparse.ArgumentParser()
+    p.add_argument("--episodes", type=int, default=100)
+    p.add_argument("--seed",     type=int, default=42)
+    args = p.parse_args()
+    history = train(n_episodes=args.episodes, seed=args.seed)
+    print(json.dumps({
+        "final_reward":    history[-1].total_reward,
+        "final_violation": history[-1].violation_rate,
+    }))

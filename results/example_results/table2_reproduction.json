@@ -1,0 +1,37 @@
+{
+  "heuristic": {
+    "reward_mean": 43.132819999999995,
+    "reward_std": 3.602647394292149,
+    "violation_rate_mean": 0.18564
+  },
+  "dqn": {
+    "reward_mean": 54.47424,
+    "reward_std": 3.5737097283355284,
+    "violation_rate_mean": 0.142
+  },
+  "ippo": {
+    "reward_mean": 62.84174000000001,
+    "reward_std": 3.1040786028063136,
+    "violation_rate_mean": 0.11244
+  },
+  "qmix": {
+    "reward_mean": 69.84846,
+    "reward_std": 2.9011295435398967,
+    "violation_rate_mean": 0.07412
+  },
+  "mappo": {
+    "reward_mean": 73.94880000000002,
+    "reward_std": 2.664164364298873,
+    "violation_rate_mean": 0.07024000000000001
+  },
+  "cpo": {
+    "reward_mean": 71.92558000000001,
+    "reward_std": 2.8271630769377305,
+    "violation_rate_mean": 0.044360000000000004
+  },
+  "lagrangian_ctde": {
+    "reward_mean": 81.14743200000002,
+    "reward_std": 2.108597118298336,
+    "violation_rate_mean": 0.027296000000000004
+  }
+}

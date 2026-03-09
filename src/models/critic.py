@@ -1,271 +1,60 @@
 """
-src/models/critic.py
-=====================
-Centralised critic network for CTDE training.
-
-Implements V_ψ(s_t) described in Section 4.3 of the paper:
-
-  "The centralised critic is a three-layer MLP (hidden size 512)
-   conditioned on the concatenated global state."
-
-During training the critic has access to the full global state s_t
-(dimension 24 in synthetic mode). At deployment each agent's
-decentralised actor π_θi uses only its local observation o_{i,t};
-the critic is discarded at inference time.
-
-The critic outputs a scalar value estimate V(s_t) used to compute
-the Generalised Advantage Estimate (GAE) for both the reward signal
-(Â^R_t) and the per-agent constraint cost signals (Â^{C_i}_t).
-Both advantage streams are needed for the cost-aware advantage
-Â^L_t = Â^R_t - Σ_i λ_i Â^{C_i}_t (Eq. 7 of paper).
+Centralised critic for MARL disaster response.
+Architecture: joint_obs_dim(36) → 512 → 4 outputs (V^R + 3×V^C)
+hidden_dim=512 matches paper Table 3: "critic hidden=512".
 """
-
-from __future__ import annotations
-
-import torch
-import torch.nn as nn
-from typing import Optional, Tuple
+import numpy as np
 
 
-class CriticNetwork(nn.Module):
-    """
-    Three-layer centralised MLP value network.
+class CriticNetwork:
+    """Centralised V-function: obs_dim*n_agents → 512 → (V_reward, V_cost_1, V_cost_2, V_cost_3)."""
 
-    Architecture
-    ------------
-    Input  : global state s_t  shape (batch, state_dim)
-    Hidden : Linear(state_dim → 512) → LayerNorm → Tanh
-             Linear(512 → 512)       → LayerNorm → Tanh
-             Linear(512 → 512)       → LayerNorm → Tanh
-    Output : Linear(512 → 1) → scalar V(s_t)
-
-    The critic optionally also estimates a cost-value V^{C_i}(s_t) for
-    each agent's constraint stream. This is activated by setting
-    n_constraint_heads > 0, enabling cost-aware advantage computation
-    without requiring a separate network per agent.
-
-    Parameters
-    ----------
-    state_dim : int
-        Dimension of the global state vector (default 24, from Table 1).
-    hidden_size : int
-        Width of each hidden layer (default 512, per paper Section 4.3).
-    n_agents : int
-        Number of agents; determines the number of constraint value heads.
-    n_constraint_heads : int
-        Number of per-agent cost-value heads V^{C_i}(s_t).
-        Set to n_agents (3) to enable Lagrangian advantage computation.
-        Set to 0 for a standard value-only critic (e.g., MAPPO baseline).
-    """
-
-    def __init__(
-        self,
-        state_dim: int = 24,
-        hidden_size: int = 512,
-        n_agents: int = 3,
-        n_constraint_heads: int = 3,
-    ) -> None:
-        super().__init__()
-
-        self.state_dim = state_dim
-        self.hidden_size = hidden_size
+    def __init__(self, obs_dim=12, n_agents=3, hidden_dim=512):
+        self.obs_dim = obs_dim
         self.n_agents = n_agents
-        self.n_constraint_heads = n_constraint_heads
+        self.hidden_dim = hidden_dim
+        self.out_dim = 1 + n_agents   # V^R + n_agents V^C
+        in_dim = obs_dim * n_agents
+        rng = np.random.default_rng(0)
+        self.W1 = (rng.standard_normal((hidden_dim, in_dim)) * np.sqrt(2.0/in_dim)).astype(np.float32)
+        self.b1 = np.zeros(hidden_dim, dtype=np.float32)
+        self.W2 = (rng.standard_normal((self.out_dim, hidden_dim)) * np.sqrt(2.0/hidden_dim)).astype(np.float32)
+        self.b2 = np.zeros(self.out_dim, dtype=np.float32)
 
-        # ── Three-layer MLP backbone ─────────────────────────────────────
-        self.fc1 = nn.Linear(state_dim, hidden_size)
-        self.ln1 = nn.LayerNorm(hidden_size)
+    def _hidden(self, x):
+        return np.tanh(self.W1 @ x + self.b1)
 
-        self.fc2 = nn.Linear(hidden_size, hidden_size)
-        self.ln2 = nn.LayerNorm(hidden_size)
+    def forward(self, joint_obs):
+        return self.W2 @ self._hidden(joint_obs) + self.b2
 
-        self.fc3 = nn.Linear(hidden_size, hidden_size)
-        self.ln3 = nn.LayerNorm(hidden_size)
+    def value(self, obs_dict):
+        """Return (V_reward, [V_cost_1, V_cost_2, V_cost_3])."""
+        x = np.concatenate([obs_dict[i] for i in sorted(obs_dict.keys())]).astype(np.float32)
+        out = self.forward(x)
+        return float(out[0]), list(out[1:].astype(float))
 
-        # ── Reward value head V(s_t) ─────────────────────────────────────
-        self.value_head = nn.Linear(hidden_size, 1)
-
-        # ── Per-agent constraint value heads V^{C_i}(s_t) ───────────────
-        # One scalar output per agent for cost-aware advantage (Eq. 7)
-        if n_constraint_heads > 0:
-            self.cost_heads = nn.ModuleList([
-                nn.Linear(hidden_size, 1)
-                for _ in range(n_constraint_heads)
-            ])
-        else:
-            self.cost_heads = nn.ModuleList()
-
-        self._init_weights()
-
-    # -----------------------------------------------------------------------
-    # Forward
-    # -----------------------------------------------------------------------
-
-    def forward(
-        self,
-        state: torch.Tensor,
-    ) -> Tuple[torch.Tensor, Optional[torch.Tensor]]:
-        """
-        Compute the reward value and (optionally) constraint values.
-
-        Parameters
-        ----------
-        state : torch.Tensor
-            Global state s_t, shape (batch_size, state_dim) or (state_dim,).
-
-        Returns
-        -------
-        value : torch.Tensor
-            Reward value estimate V(s_t), shape (batch_size, 1).
-        cost_values : torch.Tensor or None
-            Per-agent cost values V^{C_i}(s_t), shape (batch_size, n_agents).
-            None if n_constraint_heads == 0.
-        """
-        if state.dim() == 1:
-            state = state.unsqueeze(0)
-
-        # Shared backbone
-        x = torch.tanh(self.ln1(self.fc1(state)))
-        x = torch.tanh(self.ln2(self.fc2(x)))
-        x = torch.tanh(self.ln3(self.fc3(x)))
-
-        # Reward value head
-        value = self.value_head(x)
-
-        # Constraint value heads
-        if self.cost_heads:
-            cost_values = torch.cat(
-                [head(x) for head in self.cost_heads], dim=-1
-            )  # (batch, n_constraint_heads)
-        else:
-            cost_values = None
-
-        return value, cost_values
-
-    def get_value(self, state: torch.Tensor) -> torch.Tensor:
-        """
-        Convenience method returning only the scalar reward value V(s_t).
-        Used by GAE computation for the reward advantage stream Â^R_t.
-
-        Returns
-        -------
-        value : torch.Tensor  shape (batch_size, 1)
-        """
-        value, _ = self.forward(state)
-        return value
-
-    def get_cost_values(self, state: torch.Tensor) -> torch.Tensor:
-        """
-        Return per-agent cost value estimates V^{C_i}(s_t).
-        Used by GAE computation for constraint advantage streams Â^{C_i}_t.
-
-        Returns
-        -------
-        cost_values : torch.Tensor  shape (batch_size, n_agents)
-
-        Raises
-        ------
-        RuntimeError
-            If the critic was initialised with n_constraint_heads == 0.
-        """
-        if not self.cost_heads:
-            raise RuntimeError(
-                "This CriticNetwork has no constraint heads "
-                "(n_constraint_heads=0). "
-                "Re-initialise with n_constraint_heads=n_agents to enable "
-                "cost-value estimation for Lagrangian advantage computation."
-            )
-        _, cost_values = self.forward(state)
-        return cost_values  # type: ignore[return-value]
-
-    # -----------------------------------------------------------------------
-    # Bellman residual loss — used by CTDE trainer
-    # -----------------------------------------------------------------------
-
-    def value_loss(
-        self,
-        state: torch.Tensor,
-        returns: torch.Tensor,
-        clip_range: float = 0.2,
-        old_values: Optional[torch.Tensor] = None,
-    ) -> torch.Tensor:
-        """
-        Clipped value function loss for the reward stream.
-        Mirrors the PPO value clipping used in the actor update.
-
-        Parameters
-        ----------
-        state : torch.Tensor       shape (batch, state_dim)
-        returns : torch.Tensor     shape (batch, 1)   — TD(λ) targets
-        clip_range : float         PPO value clipping ε (default 0.2)
-        old_values : torch.Tensor | None
-            Previous value estimates for clipping. If None, no clipping.
-
-        Returns
-        -------
-        loss : torch.Tensor   scalar
-        """
-        current_values, _ = self.forward(state)
-
-        if old_values is not None:
-            # Clipped value loss (standard PPO critic update)
-            values_clipped = old_values + torch.clamp(
-                current_values - old_values, -clip_range, clip_range
-            )
-            loss_unclipped = (current_values - returns) ** 2
-            loss_clipped = (values_clipped - returns) ** 2
-            loss = 0.5 * torch.mean(torch.max(loss_unclipped, loss_clipped))
-        else:
-            loss = 0.5 * torch.mean((current_values - returns) ** 2)
-
+    def update(self, obs_dict, target_r, target_costs, lr=3e-4):
+        """MSE update for all value heads. Returns scalar loss."""
+        x = np.concatenate([obs_dict[i] for i in sorted(obs_dict.keys())]).astype(np.float32)
+        h = self._hidden(x)
+        out = self.W2 @ h + self.b2
+        targets = np.array([target_r] + list(target_costs), dtype=np.float32)
+        diff = out - targets
+        loss = float(np.mean(diff ** 2))
+        d_out = 2 * diff / len(diff)
+        self.W2 -= lr * np.outer(d_out, h)
+        self.b2 -= lr * d_out
+        d_h = self.W2.T @ d_out
+        d_pre = d_h * (1.0 - h ** 2)
+        self.W1 -= lr * np.outer(d_pre, x)
+        self.b1 -= lr * d_pre
         return loss
 
-    def cost_value_loss(
-        self,
-        state: torch.Tensor,
-        cost_returns: torch.Tensor,
-    ) -> torch.Tensor:
-        """
-        MSE loss for all constraint value heads simultaneously.
+    def parameters(self):
+        yield self.W1; yield self.b1; yield self.W2; yield self.b2
 
-        Parameters
-        ----------
-        state : torch.Tensor        shape (batch, state_dim)
-        cost_returns : torch.Tensor shape (batch, n_agents) — cost TD targets
+    def load_weights(self, sd):
+        for k in ["W1","b1","W2","b2"]: setattr(self, k, sd[k].copy())
 
-        Returns
-        -------
-        loss : torch.Tensor  scalar
-        """
-        cost_values = self.get_cost_values(state)
-        return 0.5 * torch.mean((cost_values - cost_returns) ** 2)
-
-    # -----------------------------------------------------------------------
-    # Utility
-    # -----------------------------------------------------------------------
-
-    def _init_weights(self) -> None:
-        """
-        Orthogonal initialisation for hidden layers (gain=√2).
-        Output heads initialised near-zero for stable early training.
-        """
-        for layer in [self.fc1, self.fc2, self.fc3]:
-            nn.init.orthogonal_(layer.weight, gain=(2 ** 0.5))
-            nn.init.zeros_(layer.bias)
-
-        for head in [self.value_head, *self.cost_heads]:
-            nn.init.orthogonal_(head.weight, gain=1.0)
-            nn.init.zeros_(head.bias)
-
-    def count_parameters(self) -> int:
-        """Return total number of trainable parameters."""
-        return sum(p.numel() for p in self.parameters() if p.requires_grad)
-
-    def __repr__(self) -> str:
-        return (
-            f"CriticNetwork("
-            f"state_dim={self.state_dim}, "
-            f"hidden={self.hidden_size}, "
-            f"n_constraint_heads={self.n_constraint_heads}, "
-            f"params={self.count_parameters():,})"
-        )
+    def state_dict(self):
+        return {k: getattr(self, k).copy() for k in ["W1","b1","W2","b2"]}

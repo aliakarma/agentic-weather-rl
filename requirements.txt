@@ -1,40 +1,16 @@
-# ============================================================
-#  Risk-Aware MARL for Cloudburst Disaster Response
-#  requirements.txt — pinned for full reproducibility
-# ============================================================
+# ── Core (required for all scripts and notebooks) ────────────────────────────
+numpy>=1.23
+matplotlib>=3.5
+scipy>=1.9
 
-# Deep learning core
-# Python 3.12 wheels are unavailable for torch==2.1.0, so use a compatible pair.
-torch==2.1.0; python_version < "3.12"
-torchvision==0.16.0; python_version < "3.12"
-torch==2.2.2; python_version >= "3.12"
-torchvision==0.17.2; python_version >= "3.12"
+# ── Optional: GPU training with real PyTorch ──────────────────────────────────
+# Install separately — not required for CPU demo, evaluation, or perception ablation
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 
-# Vision Transformer backbone (ViT-B/16)
-timm==0.9.12
+# ── Optional: notebook support ────────────────────────────────────────────────
+# jupyter>=1.0
+# ipykernel>=6.0
 
-# Reinforcement learning framework
-stable-baselines3==2.2.1
-gymnasium==0.29.1
-
-# Scientific computing
-# Keep NumPy < 2 for broad binary compatibility with current torch stack.
-numpy<2
-scipy
-pandas
-
-# Visualisation
-matplotlib
-
-# Configuration
-pyyaml
-
-# Progress bars
-tqdm
-
-# Dataset I/O
-h5py          # SEVIR HDF5 storm event files
-netCDF4       # GOES-16 NetCDF satellite products
-
-# Experiment tracking
-tensorboard
+# ── Optional: experiment tracking ────────────────────────────────────────────
+# tensorboard>=2.10
+# wandb>=0.15

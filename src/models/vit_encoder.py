@@ -60,7 +60,7 @@ def _make_dataset(noise, use_sat, seed, n=3000):
     return X, y
 
 
-def _split(X, y, tf=0.70, vf=0.15):
+def _split(X, y, tf=0.80, vf=0.10):
     n = len(y)
     t, v = int(n * tf), int(n * (tf + vf))
     return (X[:t], y[:t]), (X[t:v], y[t:v]), (X[v:], y[v:])

@@ -26,7 +26,6 @@ from src.environment.disaster_env import DisasterEnv
 
 
 # ── History record ────────────────────────────────────────────────────────────
-
 @dataclass
 class EpisodeStats:
     episode:        int
@@ -38,7 +37,6 @@ class EpisodeStats:
 
 
 # ── Config ────────────────────────────────────────────────────────────────────
-
 @dataclass
 class LagrangianCTDEConfig:
     # Architecture
@@ -56,6 +54,8 @@ class LagrangianCTDEConfig:
     gae_lambda:   float = 0.95
     clip_eps:     float = 0.2
     entropy_coef: float = 0.01
+    batch_size:   int   = 64
+    n_minibatches: int  = 4
     # Lagrangian
     lambda_init:  float = 0.10
     lambda_lr:    float = 1e-3

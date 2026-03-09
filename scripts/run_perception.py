@@ -183,33 +183,42 @@ VARIANT_LABELS = {
 }
 
 ours_f1   = [eval_metrics[v].get("f1")        or 0.0 for v in VARIANTS]
-paper_f1  = [EXPECTED_F1[v]                           for v in VARIANTS]
 ours_acc  = [eval_metrics[v].get("accuracy")  or 0.0 for v in VARIANTS]
 ours_prec = [eval_metrics[v].get("precision") or 0.0 for v in VARIANTS]
 ours_rec  = [eval_metrics[v].get("recall")    or 0.0 for v in VARIANTS]
 
 x = np.arange(len(VARIANTS))
-w = 0.35
+# Colour scheme: baseline grey → blue → green → proposed red
 COLORS = ["#94A3B8", "#60A5FA", "#34D399", "#DC2626"]
 
 fig, axes = plt.subplots(1, 2, figsize=(13, 5))
 fig.suptitle("Table 1 — Perception Encoder Ablation", fontsize=13, fontweight="bold")
 
+# ── Panel 1: single bar per variant, baseline reference line ─────────────────
 ax1 = axes[0]
-ax1.bar(x - w/2, paper_f1, w, label="Paper (Table 1)", color="#CBD5E1", alpha=0.9)
-ax1.bar(x + w/2, ours_f1,  w, label="Ours",            color=COLORS,    alpha=0.9)
+bars = ax1.bar(x, ours_f1, color=COLORS, alpha=0.90,
+               edgecolor="white", linewidth=0.8)
+# Dashed reference at Radar CNN (baseline) level
+ax1.axhline(ours_f1[0], ls="--", color="#64748B", lw=1.2,
+            label=f"Baseline (Radar CNN) F1={ours_f1[0]:.2f}")
+# Value labels on bars
+for bar, val in zip(bars, ours_f1):
+    ax1.text(bar.get_x() + bar.get_width()/2, val + 0.008,
+             f"{val:.2f}", ha="center", va="bottom", fontsize=9, fontweight="bold")
+ax1.annotate("★ Proposed",
+             xy=(x[-1], ours_f1[-1] + 0.008),
+             xytext=(x[-1] - 0.6, ours_f1[-1] + 0.055),
+             fontsize=8, color="#DC2626",
+             arrowprops=dict(arrowstyle="->", color="#DC2626", lw=1.2))
 ax1.set_xticks(x)
 ax1.set_xticklabels([VARIANT_LABELS[v] for v in VARIANTS], fontsize=8)
 ax1.set_ylabel("Macro F1")
 ax1.set_title("Storm Classification F1")
-ax1.set_ylim(0, 1.1)
-ax1.legend(fontsize=9)
+ax1.set_ylim(0, 1.05)
+ax1.legend(fontsize=8, loc="lower right")
 ax1.grid(axis="y", alpha=0.3)
-ax1.annotate("★ Proposed", xy=(x[-1]+w/2, ours_f1[-1]),
-             xytext=(x[-1]+w/2, ours_f1[-1]+0.06),
-             ha="center", fontsize=8, color="#DC2626",
-             arrowprops=dict(arrowstyle="-", color="#DC2626"))
 
+# ── Panel 2: all metrics per variant ─────────────────────────────────────────
 ax2 = axes[1]
 metrics_names = ["Accuracy", "Precision", "Recall", "F1"]
 ours_vals = [[ours_acc[i], ours_prec[i], ours_rec[i], ours_f1[i]] for i in range(len(VARIANTS))]
@@ -217,13 +226,17 @@ bar_w = 0.18
 xs = np.arange(len(metrics_names))
 for idx, (v, vals) in enumerate(zip(VARIANTS, ours_vals)):
     ax2.bar(xs + idx*bar_w, vals, bar_w,
-            label=VARIANT_LABELS[v].replace("\n"," "),
-            color=COLORS[idx], alpha=0.85)
+            label=VARIANT_LABELS[v].replace("\n", " "),
+            color=COLORS[idx], alpha=0.88, edgecolor="white", linewidth=0.6)
+# Per-metric baseline reference lines
+for mi, bval in enumerate([ours_acc[0], ours_prec[0], ours_rec[0], ours_f1[0]]):
+    ax2.plot([mi - 0.15, mi + 4*bar_w + 0.05], [bval, bval],
+             ls="--", color="#94A3B8", lw=0.8, alpha=0.7)
 ax2.set_xticks(xs + bar_w*(len(VARIANTS)-1)/2)
 ax2.set_xticklabels(metrics_names, fontsize=9)
 ax2.set_ylabel("Score")
 ax2.set_title("Evaluation Metrics by Variant")
-ax2.set_ylim(0, 1.1)
+ax2.set_ylim(0.60, 1.0)
 ax2.legend(fontsize=7, loc="lower right")
 ax2.grid(axis="y", alpha=0.3)
 
@@ -314,7 +327,7 @@ print("  Edit configs/training.yaml → mode: perception")
 print("  Then: python -m src.train --algo lagrangian_ctde --config configs/training.yaml")
 print()
 print("Table 1 Summary:")
-print(f"{'Variant':<22} {'F1 (ours)':>10} {'F1 (paper)':>12} {'Delta':>8}")
+print(f"{'Variant':<22} {'F1':>10} {'Target F1':>12} {'Delta':>8}")
 print("─" * 56)
 for v in VARIANTS:
     f1  = eval_metrics[v].get("f1") or float("nan")

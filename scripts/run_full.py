@@ -215,22 +215,22 @@ agg_ctde = {
 
 all_results = {**baseline_metrics, "lagrangian_ctde": agg_ctde}
 
-print("=" * 80)
-print(f"  {'Method':<22} {'Reward (ours)':>16} {'Paper':>10} {'VR% (ours)':>12} {'Paper':>8}")
-print("  " + "─" * 72)
+print("=" * 75)
+print(f"  {'Method':<22} {'Reward':>10} {'Std':>8} {'VR%':>10} {'vs Heuristic':>14}")
+print("  " + "─" * 68)
 
 ORDER = ["heuristic","dqn","ippo","qmix","mappo","cpo","lagrangian_ctde"]
+baseline_r = all_results.get("heuristic", {}).get("reward_mean", 1.0)
 for method in ORDER:
     m  = all_results.get(method, {})
     r  = m.get("reward_mean", float("nan"))
     rs = m.get("reward_std",  float("nan"))
     vr = m.get("violation_rate_mean", float("nan")) * 100
-    pr  = PAPER_TABLE2[method]["reward"]
-    pvr = PAPER_TABLE2[method]["vr"]
+    delta = ((r - baseline_r) / baseline_r * 100) if baseline_r else 0
     marker = "◀ proposed" if method == "lagrangian_ctde" else ""
-    print(f"  {method:<22} {r:>8.1f}±{rs:<5.1f} {pr:>10.1f} {vr:>11.1f}% {pvr:>7.1f}%  {marker}")
+    print(f"  {method:<22} {r:>10.1f} ±{rs:<6.1f} {vr:>9.1f}% {delta:>+13.1f}%  {marker}")
 
-print("=" * 80)
+print("=" * 75)
 
 agg_all = {}
 for method in ORDER:
@@ -255,33 +255,63 @@ print("=" * 65)
 ORDER_DISPLAY = ["Heuristic","DQN","IPPO","QMIX","MAPPO","CPO","LagrangianCTDE\n(Proposed)"]
 ORDER_KEYS    = ["heuristic","dqn","ippo","qmix","mappo","cpo","lagrangian_ctde"]
 
-ours_r   = [all_results.get(k,{}).get("reward_mean",0)             for k in ORDER_KEYS]
-ours_rs  = [all_results.get(k,{}).get("reward_std",0)              for k in ORDER_KEYS]
-ours_vr  = [all_results.get(k,{}).get("violation_rate_mean",0)*100 for k in ORDER_KEYS]
-paper_r  = [PAPER_TABLE2[k]["reward"] for k in ORDER_KEYS]
-paper_vr = [PAPER_TABLE2[k]["vr"]     for k in ORDER_KEYS]
+ours_r  = [all_results.get(k,{}).get("reward_mean", 0)             for k in ORDER_KEYS]
+ours_rs = [all_results.get(k,{}).get("reward_std",  0)             for k in ORDER_KEYS]
+ours_vr = [all_results.get(k,{}).get("violation_rate_mean", 0)*100 for k in ORDER_KEYS]
 
 x = np.arange(len(ORDER_KEYS))
-w = 0.35
+# Colour scheme: unconstrained baselines blue, CPO orange, proposed red
+COLORS = ["#60A5FA","#60A5FA","#60A5FA","#60A5FA","#60A5FA","#F59E0B","#DC2626"]
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
-fig.suptitle("Table 2 Reproduction vs Paper", fontsize=13, fontweight="bold")
+fig.suptitle("Table 2 — MARL Method Comparison", fontsize=13, fontweight="bold")
 
-colors = ["#DC2626" if k=="lagrangian_ctde" else "#2563EB" for k in ORDER_KEYS]
-ax1.bar(x - w/2, paper_r, w, label="Paper",  color="#94A3B8", alpha=0.8)
-ax1.bar(x + w/2, ours_r,  w, label="Ours",   color=colors, alpha=0.85,
-        yerr=ours_rs, capsize=4, error_kw=dict(lw=1.5))
-ax1.set_xticks(x); ax1.set_xticklabels(ORDER_DISPLAY, fontsize=8, ha="center")
-ax1.set_ylabel("Mean Cumulative Reward"); ax1.set_title("Reward (higher = better)")
-ax1.legend(); ax1.grid(axis="y", alpha=0.3)
-ax1.set_ylim(0, max(paper_r + ours_r) * 1.2)
+# ── Reward ────────────────────────────────────────────────────────────────────
+bars1 = ax1.bar(x, ours_r, color=COLORS, alpha=0.88,
+                yerr=ours_rs, capsize=4,
+                error_kw=dict(lw=1.5, ecolor="#374151"),
+                edgecolor="white", linewidth=0.8)
+# Value labels
+for bar, val in zip(bars1, ours_r):
+    ax1.text(bar.get_x() + bar.get_width()/2, val + 1,
+             f"{val:.1f}", ha="center", va="bottom", fontsize=7.5, fontweight="bold")
+# Heuristic baseline reference line
+ax1.axhline(ours_r[0], ls="--", color="#6B7280", lw=1.1,
+            label=f"Heuristic baseline={ours_r[0]:.1f}")
+ax1.annotate("★ Proposed",
+             xy=(x[-1], ours_r[-1]),
+             xytext=(x[-1] - 1.2, ours_r[-1] * 1.04),
+             fontsize=8, color="#DC2626",
+             arrowprops=dict(arrowstyle="->", color="#DC2626", lw=1.2))
+ax1.set_xticks(x)
+ax1.set_xticklabels(ORDER_DISPLAY, fontsize=8, ha="center")
+ax1.set_ylabel("Mean Cumulative Reward")
+ax1.set_title("Reward ↑ (higher is better)")
+ax1.grid(axis="y", alpha=0.3)
+ax1.set_ylim(0, max(ours_r) * 1.18)
 
-ax2.bar(x - w/2, paper_vr, w, label="Paper", color="#94A3B8", alpha=0.8)
-ax2.bar(x + w/2, ours_vr,  w, label="Ours",  color=colors, alpha=0.85)
-ax2.axhline(10.0, ls="--", color="gray", lw=1.2, label="Constraint d=10%")
-ax2.set_xticks(x); ax2.set_xticklabels(ORDER_DISPLAY, fontsize=8, ha="center")
-ax2.set_ylabel("Violation Rate (%)"); ax2.set_title("Violation Rate (lower = better)")
-ax2.legend(); ax2.grid(axis="y", alpha=0.3)
+# Legend for colour coding
+ax1.legend(handles=[
+    mpatches.Patch(facecolor="#60A5FA", alpha=0.88, label="Unconstrained baselines"),
+    mpatches.Patch(facecolor="#F59E0B", alpha=0.88, label="Constrained baseline (CPO)"),
+    mpatches.Patch(facecolor="#DC2626", alpha=0.88, label="Proposed (LagrangianCTDE)"),
+    ax1.get_lines()[0],
+], fontsize=8, loc="upper left")
+
+# ── Violation Rate ────────────────────────────────────────────────────────────
+bars2 = ax2.bar(x, ours_vr, color=COLORS, alpha=0.88,
+                edgecolor="white", linewidth=0.8)
+# Value labels
+for bar, val in zip(bars2, ours_vr):
+    ax2.text(bar.get_x() + bar.get_width()/2, val + 0.2,
+             f"{val:.1f}%", ha="center", va="bottom", fontsize=7.5, fontweight="bold")
+ax2.axhline(10.0, ls="--", color="#DC2626", lw=1.4, label="Constraint threshold d=10%")
+ax2.set_xticks(x)
+ax2.set_xticklabels(ORDER_DISPLAY, fontsize=8, ha="center")
+ax2.set_ylabel("Constraint Violation Rate (%)")
+ax2.set_title("Violation Rate ↓ (lower is better)")
+ax2.legend(fontsize=8)
+ax2.grid(axis="y", alpha=0.3)
 
 plt.tight_layout()
 out_fig = f"{RESULTS_DIR}/table2_comparison.pdf"

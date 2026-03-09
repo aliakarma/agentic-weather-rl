@@ -1,37 +1,37 @@
 {
   "heuristic": {
-    "reward_mean": 43.132819999999995,
-    "reward_std": 3.602647394292149,
-    "violation_rate_mean": 0.18564
+    "reward_mean": 85.96096000000001,
+    "reward_std": 5.389661796291121,
+    "violation_rate_mean": 0.203
   },
   "dqn": {
-    "reward_mean": 54.47424,
-    "reward_std": 3.5737097283355284,
-    "violation_rate_mean": 0.142
+    "reward_mean": 108.30224000000005,
+    "reward_std": 5.058236667298206,
+    "violation_rate_mean": 0.16168000000000002
   },
   "ippo": {
-    "reward_mean": 62.84174000000001,
-    "reward_std": 3.1040786028063136,
-    "violation_rate_mean": 0.11244
+    "reward_mean": 125.18466000000006,
+    "reward_std": 4.635449070413788,
+    "violation_rate_mean": 0.12778
   },
   "qmix": {
-    "reward_mean": 69.84846,
-    "reward_std": 2.9011295435398967,
-    "violation_rate_mean": 0.07412
+    "reward_mean": 139.40238000000005,
+    "reward_std": 3.748065545798254,
+    "violation_rate_mean": 0.08206000000000001
   },
   "mappo": {
-    "reward_mean": 73.94880000000002,
-    "reward_std": 2.664164364298873,
-    "violation_rate_mean": 0.07024000000000001
+    "reward_mean": 147.67666000000003,
+    "reward_std": 3.5617548265426615,
+    "violation_rate_mean": 0.07754
   },
   "cpo": {
-    "reward_mean": 71.92558000000001,
-    "reward_std": 2.8271630769377305,
-    "violation_rate_mean": 0.044360000000000004
+    "reward_mean": 143.74140000000008,
+    "reward_std": 4.115831099547203,
+    "violation_rate_mean": 0.052
   },
   "lagrangian_ctde": {
-    "reward_mean": 81.14743200000002,
-    "reward_std": 2.108597118298336,
-    "violation_rate_mean": 0.027296000000000004
+    "reward_mean": 162.13912000000002,
+    "reward_std": 4.231010859792256,
+    "violation_rate_mean": 0.03088
   }
 }

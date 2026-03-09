@@ -1,0 +1,20 @@
+# ── Git LFS — track binary checkpoint files ───────────────────────────────────
+checkpoints/*.pt    filter=lfs diff=lfs merge=lfs -text
+checkpoints/*.pth   filter=lfs diff=lfs merge=lfs -text
+checkpoints/*.npz   filter=lfs diff=lfs merge=lfs -text
+
+# ── Normalise line endings ─────────────────────────────────────────────────────
+*.py    text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.md    text eol=lf
+*.txt   text eol=lf
+*.sh    text eol=lf
+*.json  text eol=lf
+*.ipynb text eol=lf
+
+# ── Binary files — do not diff ────────────────────────────────────────────────
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.h5    binary

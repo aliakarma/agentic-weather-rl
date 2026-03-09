@@ -1,0 +1,16 @@
+# ── Core (required for all scripts and notebooks) ────────────────────────────
+numpy>=1.23
+matplotlib>=3.5
+scipy>=1.9
+
+# ── Optional: GPU training with real PyTorch ──────────────────────────────────
+# Install separately — not required for CPU demo, evaluation, or perception ablation
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+
+# ── Optional: notebook support ────────────────────────────────────────────────
+# jupyter>=1.0
+# ipykernel>=6.0
+
+# ── Optional: experiment tracking ────────────────────────────────────────────
+# tensorboard>=2.10
+# wandb>=0.15

@@ -1,0 +1,91 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+wheels/
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.conda/
+
+# ── Jupyter Notebooks ─────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+profile_default/
+ipython_config.py
+
+# ── PyTorch / ML artifacts ────────────────────────────────────────────────────
+# Checkpoint files are tracked via Git LFS — do not ignore .pt / .npz
+# Uncomment the lines below ONLY if you are NOT using Git LFS:
+# *.pt
+# *.pth
+# *.npz
+*.onnx
+*.pb
+wandb/
+
+# ── Data ──────────────────────────────────────────────────────────────────────
+data/sevir/          # Full SEVIR dataset (large, not committed)
+data/raw/
+data/interim/
+data/processed/
+*.h5
+*.hdf5
+*.nc
+*.zarr
+
+# ── Results / outputs ─────────────────────────────────────────────────────────
+runs/                # TensorBoard logs
+results/runs/
+*.log
+logs/
+
+# ── OS / editor ───────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# ── Secrets ───────────────────────────────────────────────────────────────────
+.env.*
+secrets.yaml
+secrets.json
+*.pem
+*.key

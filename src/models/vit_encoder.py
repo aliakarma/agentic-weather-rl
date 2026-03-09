@@ -242,3 +242,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# ── Public API aliases ────────────────────────────────────────────────────────
+# The __init__.py and notebooks import these names; they map to the
+# internal implementations above.
+ViTEncoder      = _MLP        # primary encoder class (all 4 variants share this arch)
+train_encoder   = _train      # train a single variant; accepts argparse.Namespace
+evaluate_encoder = _eval      # evaluate a checkpoint; accepts argparse.Namespace

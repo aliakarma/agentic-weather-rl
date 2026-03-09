@@ -10,13 +10,13 @@ abstract: >
   training algorithm (CTDE). Achieves 81.5 ± 2.6 cumulative reward at 2.3%
   safety violation rate, outperforming six baselines including MAPPO and CPO.
 authors:
-  - family-names: "Karma"
+  - family-names: "Akarma"
     given-names: "Ali"
-    orcid: "https://orcid.org/0000-0000-0000-0000"
+    orcid: "https://orcid.org/0009-0002-6687-9380"
 repository-code: "https://github.com/aliakarma/agentic-weather-rl"
 license: MIT
-version: "1.0.0"
-date-released: "2025-01-01"
+version: "2.0.0"
+date-released: "2026-03-09"
 keywords:
   - multi-agent reinforcement learning
   - disaster response
@@ -29,7 +29,7 @@ preferred-citation:
   type: article
   title: "Risk-Aware Multi-Agent Reinforcement Learning for Cloudburst Disaster Response"
   authors:
-    - family-names: "Karma"
+    - family-names: "Akarma"
       given-names: "Ali"
   journal: "Mathematics"
   publisher: "MDPI"

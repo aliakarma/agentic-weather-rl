@@ -10,7 +10,7 @@ class DisasterEnv:
     N_AGENTS = 3
     N_ACTIONS = 4
     OBS_DIM = 12
-    episode_length = 50
+    episode_length = 100
 
     OPTIMAL_ACTIONS = np.array([
         [0, 1, 2, 3, 3],  # Storm agent

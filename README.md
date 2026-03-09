@@ -80,22 +80,22 @@ The framework is benchmarked against six baselines (Heuristic, DQN, IPPO, QMIX, 
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     LagrangianCTDE System                        │
-│                                                                  │
+│                     LagrangianCTDE System                       │
+│                                                                 │
 │  ┌──────────────┐    ┌──────────────────────────────────────┐   │
 │  │  Perception  │    │           MARL Policy                │   │
 │  │   Module     │    │                                      │   │
 │  │              │    │  Agent 1 (Storm)   → Actor MLP-256   │   │
 │  │  NEXRAD  ┐   │    │  Agent 2 (Flood)   → Actor MLP-256   │   │
-│  │  Radar   ├──▶│φ_t │  Agent 3 (Evac.)  → Actor MLP-256   │   │
+│  │  Radar   ├──▶│φ_t │  Agent 3 (Evac.)  → Actor MLP-256   │    │
 │  │  GOES-16 ┘   │    │                                      │   │
 │  │  ViT-B/16    │    │  Joint Critic (CTDE)  → MLP-512      │   │
-│  └──────────────┘    │  Lagrange Multipliers → λ₁, λ₂, λ₃  │   │
+│  └──────────────┘    │  Lagrange Multipliers → λ₁, λ₂, λ₃   │   │
 │                      └──────────────────────────────────────┘   │
-│                                        │                         │
+│                                        │                        │
 │                              ┌─────────▼──────────┐             │
-│                              │  Orchestration Layer│             │
-│                              │  (Emergency Alerts) │             │
+│                              │  Orchestration Layer│            │
+│                              │  (Emergency Alerts) │            │
 │                              └────────────────────┘             │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -160,10 +160,10 @@ All notebooks are in `notebooks/` and self-contained — the first cell handles 
 
 | Notebook | Colab | Runtime | Description |
 |---|:---:|:---:|---|
-| `colab_demo_fixed.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_demo_fixed.ipynb) | ~5 min · CPU | Evaluate pretrained policy, verify Table 2 targets |
-| `colab_train_fixed.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_train_fixed.ipynb) | ~20 min · T4 | PPO training from scratch, training curves |
-| `colab_full_fixed.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_full_fixed.ipynb) | ~4 hrs · A100 | Full Table 2: 5 seeds × all 7 methods |
-| `colab_perception_fixed.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_perception_fixed.ipynb) | ~30 min · T4 | Table 1: 4 encoder variants + t-test significance |
+| `colab_demo_fixed.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_demo.ipynb) | ~5 min · CPU | Evaluate pretrained policy, verify Table 2 targets |
+| `colab_train_fixed.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_train.ipynb) | ~20 min · T4 | PPO training from scratch, training curves |
+| `colab_full_fixed.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_full.ipynb) | ~4 hrs · A100 | Full Table 2: 5 seeds × all 7 methods |
+| `colab_perception_fixed.ipynb` | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/aliakarma/agentic-weather-rl/blob/main/notebooks/colab_perception.ipynb) | ~30 min · T4 | Table 1: 4 encoder variants + t-test significance |
 
 ---
 
@@ -211,10 +211,10 @@ agentic-weather-rl/
 │   └── evaluate.py           # Evaluation runner
 │
 ├── 📓 notebooks/
-│   ├── colab_demo_fixed.ipynb
-│   ├── colab_train_fixed.ipynb
-│   ├── colab_full_fixed.ipynb
-│   └── colab_perception_fixed.ipynb
+│   ├── colab_demo.ipynb
+│   ├── colab_train.ipynb
+│   ├── colab_full.ipynb
+│   └── colab_perception.ipynb
 │
 ├── 🔧 scripts/
 │   ├── run_demo.py           ← python scripts/run_demo.py
@@ -270,24 +270,6 @@ scipy>=1.9
 ```
 
 > **No PyTorch required** for CPU inference and the demo. GPU training with PyTorch is supported — install via `pip install torch` separately.
-
----
-
-## 📜 Citation
-
-If you use this code in your research, please cite:
-
-```bibtex
-@article{karma2025riskawaremarl,
-  title   = {Risk-Aware Multi-Agent Reinforcement Learning
-             for Cloudburst Disaster Response},
-  author  = {Karma, Ali and others},
-  journal = {Mathematics},
-  publisher = {MDPI},
-  year    = {2025},
-  url     = {https://www.mdpi.com/journal/mathematics}
-}
-```
 
 ---
 

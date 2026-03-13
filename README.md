@@ -1,11 +1,8 @@
 <div align="center">
 
-<!-- ═══════════════════════════  BANNER  ═══════════════════════════ -->
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://capsule-render.vercel.app/api?type=waving&color=0:0ea5e9,50:6366f1,100:8b5cf6&height=200&section=header&text=LagrangianCTDE&fontSize=52&fontColor=ffffff&fontAlignY=38&desc=Risk-Aware%20Multi-Agent%20RL%20for%20Cloudburst%20Disaster%20Response&descAlignY=62&descSize=18&animation=fadeIn"/>
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0ea5e9,50:6366f1,100:8b5cf6&height=200&section=header&text=LagrangianCTDE&fontSize=52&fontColor=ffffff&fontAlignY=38&desc=Risk-Aware%20Multi-Agent%20RL%20for%20Cloudburst%20Disaster%20Response&descAlignY=62&descSize=18&animation=fadeIn" alt="LagrangianCTDE Banner"/>
-</picture>
+<!-- LOGO / BANNER -->
+<img src="https://raw.githubusercontent.com/aliakarma/agentic-weather-rl/main/banner.png" alt="agentic-weather-rl Banner" width="100%" onerror="this.style.display='none'"/>
 
 <br/>
 
@@ -115,25 +112,25 @@ The system is benchmarked against **six baselines** — Heuristic, DQN, IPPO, QM
 ## 🏗️ Architecture
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│                        LagrangianCTDE System                         │
-│                                                                      │
-│  ┌────────────────────┐    ┌───────────────────────────────────────┐ │
-│  │  Perception Module │    │             MARL Policy               │ │
-│  │                    │    │                                       │ │
-│  │  NEXRAD Radar  ──┐ │    │  Agent 1 — Storm      → Actor MLP-256 │ │
-│  │                  ├─┼──▶ │  Agent 2 — Flood      → Actor MLP-256 │ │
-│  │  GOES-16 Sat.  ──┘ │    │  Agent 3 — Evacuation → Actor MLP-256 │ │
-│  │  (ViT-B/16)        │ φₜ │                                       │ │
-│  │                    │    │  Joint Critic (CTDE)   → MLP-512      │ │
-│  └────────────────────┘    │  Lagrange Multipliers  → λ₁, λ₂, λ₃  │ │
-│                            └───────────────────┬───────────────────┘ │
-│                                                │                     │
-│                              ┌─────────────────▼──────────────────┐  │
-│                              │        Orchestration Layer         │  │
-│                              │   Action → Emergency Alert API     │  │
-│                              └────────────────────────────────────┘  │
-└──────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────┐
+│                        LagrangianCTDE System                          │
+│                                                                       │
+│  ┌────────────────────┐    ┌───────────────────────────────────────┐  │
+│  │  Perception Module │    │             MARL Policy               │  │
+│  │                    │    │                                       │  │
+│  │  NEXRAD Radar  ──┐ │    │  Agent 1 — Storm      → Actor MLP-256 │  │
+│  │                  ├─┼──▶ │  Agent 2 — Flood      → Actor MLP-256│  │
+│  │  GOES-16 Sat.  ──┘ │    │  Agent 3 — Evacuation → Actor MLP-256 │  │
+│  │  (ViT-B/16)        │ φₜ │                                        │  │
+│  │                    │    │  Joint Critic (CTDE)   → MLP-512      │  │
+│  └────────────────────┘    │  Lagrange Multipliers  → λ₁, λ₂, λ₃   │  │
+│                            └───────────────────┬───────────────────┘  │
+│                                                │                      │
+│                              ┌─────────────────▼──────────────────┐   │
+│                              │        Orchestration Layer         │   │
+│                              │   Action → Emergency Alert API     │   │
+│                              └────────────────────────────────────┘   │
+└───────────────────────────────────────────────────────────────────────┘
 ```
 
 **Core components:**

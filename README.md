@@ -2,7 +2,7 @@
 
 
 <!-- LOGO / BANNER -->
-<img src="https://raw.githubusercontent.com/aliakarma/agentic-weather-rl/main/banner.png" alt="agentic-weather-rl Banner" width="100%" onerror="this.style.display='none'"/>
+<img src="banner.png" alt="agentic-weather-rl Banner" width="100%" onerror="this.style.display='none'"/>
 
 <br/>
 

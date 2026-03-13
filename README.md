@@ -328,10 +328,6 @@ This project is licensed under the **MIT License** — see the [`LICENSE`](LICEN
 
 <div align="center">
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://capsule-render.vercel.app/api?type=waving&color=0:8b5cf6,50:6366f1,100:0ea5e9&height=100&section=footer"/>
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:8b5cf6,50:6366f1,100:0ea5e9&height=100&section=footer" alt="footer"/>
-</picture>
 
 Made with ❤️ for safer disaster response systems
 

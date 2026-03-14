@@ -1,7 +1,9 @@
-cff-version: 1.1.0
+cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
-title: "Risk-Aware Multi-Agent Reinforcement Learning for Cloudburst Disaster Response"
+
+title: Risk-Aware Multi-Agent Reinforcement Learning for Cloudburst Disaster Response
+
 abstract: >
   A constrained multi-agent reinforcement learning framework (LagrangianCTDE)
   that coordinates Storm, Flood, and Evacuation response agents under formal
@@ -9,14 +11,17 @@ abstract: >
   radar and GOES-16 satellite imagery with a Lagrangian primal-dual PPO
   training algorithm (CTDE). Achieves 81.5 ± 2.6 cumulative reward at 2.3%
   safety violation rate, outperforming six baselines including MAPPO and CPO.
+
 authors:
-  - family-names: "Akarma"
-    given-names: "Ali"
-    orcid: "https://orcid.org/0009-0002-6687-9380"
-repository-code: "https://github.com/aliakarma/agentic-weather-rl"
+  - family-names: Akarma
+    given-names: Ali
+    orcid: https://orcid.org/0009-0002-6687-9380
+
+repository-code: https://github.com/aliakarma/agentic-weather-rl
 license: MIT
-version: "2.0.0"
-date-released: "2026-03-09"
+version: 2.0.0
+date-released: 2026-03-09
+
 keywords:
   - multi-agent reinforcement learning
   - disaster response
@@ -25,13 +30,14 @@ keywords:
   - constrained MARL
   - weather prediction
   - emergency management
+
 preferred-citation:
   type: article
-  title: "Risk-Aware Multi-Agent Reinforcement Learning for Cloudburst Disaster Response"
+  title: Risk-Aware Multi-Agent Reinforcement Learning for Cloudburst Disaster Response
   authors:
-    - family-names: "Akarma"
-      given-names: "Ali"
-  journal: "Mathematics"
-  publisher: "MDPI"
+    - family-names: Akarma
+      given-names: Ali
+  journal: Mathematics
   year: 2025
-  url: "https://www.mdpi.com/journal/mathematics"
+  publisher: MDPI
+  url: https://www.mdpi.com/journal/mathematics

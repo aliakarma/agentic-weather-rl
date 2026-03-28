@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "Risk-Aware Multi-Agent Reinforcement Learning for Cloudburst Disaster Response"
+title: "Multi-Agent Reinforcement Learning for Cloudburst Prediction and Disaster Response"
 authors:
   - family-names: Akarma
     given-names: Ali
@@ -9,6 +9,10 @@ authors:
     given-names: Toqeer Ali
   - family-names: Jan
     given-names: Salman
+  - family-names: Hameed
+    given-names: Danial
+  - family-names: Kamal
+    given-names: Shahid
 version: 2.0.1
 date-released: 2026-03-14
 repository-code: https://github.com/aliakarma/agentic-weather-rl

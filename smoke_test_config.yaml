@@ -1,0 +1,101 @@
+method: lagrangian_ctde
+output_dir: results
+
+# Smoke test: keep episodes short but satisfy statistical validity gate
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+training:
+  n_agents: 3
+  n_actions: 4
+  obs_dim: 12
+  state_dim: 24
+  hidden_dim: 128
+  gamma: 0.99
+  lr: 0.0003
+  lr_actor: 0.0003
+  lr_critic: 0.0003
+  lambda_lr: 0.001
+  cost_limit: 0.10
+  clip_eps: 0.2
+  entropy_coef: 0.01
+
+  # REDUCED for smoke test (10-20% of full)
+  train_episodes: 120    # reduced from 1000
+  save_interval: 500
+  log_interval: 20       # log more frequently for faster feedback
+
+  # Environment stochasticity controls
+  observation_noise: 0.02
+  hazard_rate: 0.22
+
+  # Baseline-specific knobs
+  batch_size: 64
+  target_update_interval: 200
+  rollout_len: 128
+  ppo_epochs: 4
+
+  # ========== IMPROVEMENTS FOR LAGRANGIAN CTDE (REWARD RECOVERY) ==========
+  
+  # 1. Adaptive dual ascent (HEAVILY REDUCED for reward recovery)
+  lr_lambda: 0.00001             # 100x reduction - almost no lambda updates
+  target_constraint: 0.10        # target constraint level
+  
+  # 1.5. Reward-First Warmup Phase (NEW - CRITICAL FOR REWARD RECOVERY)
+  warmup_phase_enabled: true
+  warmup_fraction: 0.50          # Extended to 50% of training: lambda = 0
+  
+  # 2. Curriculum scheduling for constraints (MUCH WEAKER)
+  lambda_curriculum_enabled: true
+  lambda_curriculum_min: 0.00001 # minimal - almost zero start
+  lambda_curriculum_max: 0.01    # 75% reduction - very weak max pressure
+  
+  # 3. Entropy regularization for exploration (MUCH HIGHER)
+  alpha_entropy: 0.03            # reduced to stabilize updates
+  
+  # 4. Reward component normalization (STRONGLY POSITIVE BIAS)
+  reward_weights:
+    damage_prevented: 5.0        # strong positive signal (2.5x)
+    damage_penalty: -0.1         # minimal penalty (10x reduction)
+    resource_cost: -0.001        # almost no penalty (10x reduction)
+    constraint_penalty: -0.5     # weak constraint pressure (6x reduction)
+  reward_normalize_enabled: true
+  
+  # 5. Advantage normalization
+  advantage_normalize_enabled: true
+  
+  # 6. Exploration noise improvements
+  exploration_noise_enabled: true
+  exploration_noise_schedule: "exponential"
+  
+  # 7. Hybrid value signal (optional)
+  hybrid_value_enabled: false
+
+  # 8. Behavioral cloning bootstrap
+  bc_pretrain_enabled: true
+  bc_epochs: 8
+  bc_batch_size: 128
+  bc_lr: 0.0005
+  bc_expert_episodes: 120
+  expert_data_path: "data/expert_trajectories.json"
+  expert_checkpoint_path: "checkpoints/qmix_final.pt"
+  bc_eval_samples: 512
+
+  # 9. Alignment and stabilization controls
+  freeze_actor_steps: 1500
+  actor_lr_scale: 0.008
+  adv_clip_abs: 2.0
+  kl_threshold: 0.02
+  kl_lr_backoff: 0.5
+  min_actor_lr_scale: 0.02
+  kl_early_stop_threshold: 0.015
+  ppo_update_epochs: 3
+  kl_loss_scale_threshold: 0.015
+  kl_loss_scale_factor: 0.5
+  update_every_episodes: 5
+  rollout_horizon: 50
+  return_normalize_enabled: true
+
+evaluation:
+  eval_episodes: 200
+  eval_seed_base: 10000
+  deterministic: true

@@ -7,6 +7,7 @@ from .heuristic import HeuristicPolicy
 from .ippo import IPPOAgent
 from .mappo import MAPPOAgent
 from .qmix import QMIXAgent
+from .random_agent import RandomAgent
 
 __all__ = [
 	"BaseAgent",
@@ -16,4 +17,5 @@ __all__ = [
 	"QMIXAgent",
 	"MAPPOAgent",
 	"CPOAgent",
+	"RandomAgent",
 ]

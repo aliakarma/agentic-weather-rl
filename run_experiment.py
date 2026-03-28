@@ -22,6 +22,7 @@ from src.algorithms.baselines.dqn import DQNAgent
 from src.algorithms.baselines.ippo import IPPOAgent
 from src.algorithms.baselines.mappo import MAPPOAgent
 from src.algorithms.baselines.qmix import QMIXAgent
+from src.algorithms.baselines.random_agent import RandomAgent
 from src.algorithms.lagrangian_ctde import LagrangianCTDE, LagrangianCTDEConfig
 from src.environment.disaster_env import DisasterEnv
 from src.evaluate import evaluate
@@ -76,6 +77,47 @@ def _build_agent(method: str, seed: int, train_cfg: Dict[str, Any], env_obs_dim:
             entropy_coef=float(train_cfg.get("entropy_coef", 0.01)),
             log_interval=int(train_cfg.get("log_interval", 50)),
             save_interval=int(train_cfg.get("save_interval", 500)),
+            # New parameters (Req 1-7)
+            lr_lambda=float(train_cfg.get("lr_lambda", 0.00001)),
+            target_constraint=float(train_cfg.get("target_constraint", 0.10)),
+            warmup_phase_enabled=bool(train_cfg.get("warmup_phase_enabled", True)),
+            warmup_fraction=float(train_cfg.get("warmup_fraction", 0.50)),
+            lambda_curriculum_enabled=bool(train_cfg.get("lambda_curriculum_enabled", True)),
+            lambda_curriculum_min=float(train_cfg.get("lambda_curriculum_min", 0.00001)),
+            lambda_curriculum_max=float(train_cfg.get("lambda_curriculum_max", 0.01)),
+            alpha_entropy=float(train_cfg.get("alpha_entropy", 0.10)),
+            reward_weights=dict(train_cfg.get("reward_weights", {
+                "damage_prevented": 5.0,
+                "damage_penalty": -0.1,
+                "resource_cost": -0.001,
+                "constraint_penalty": -0.5,
+            })),
+            reward_normalize_enabled=bool(train_cfg.get("reward_normalize_enabled", True)),
+            advantage_normalize_enabled=bool(train_cfg.get("advantage_normalize_enabled", True)),
+            exploration_noise_enabled=bool(train_cfg.get("exploration_noise_enabled", True)),
+            exploration_noise_schedule=str(train_cfg.get("exploration_noise_schedule", "exponential")),
+            hybrid_value_enabled=bool(train_cfg.get("hybrid_value_enabled", False)),
+            bc_pretrain_enabled=bool(train_cfg.get("bc_pretrain_enabled", True)),
+            bc_epochs=int(train_cfg.get("bc_epochs", 8)),
+            bc_batch_size=int(train_cfg.get("bc_batch_size", 128)),
+            bc_lr=float(train_cfg.get("bc_lr", 5e-4)),
+            bc_expert_episodes=int(train_cfg.get("bc_expert_episodes", 120)),
+            expert_data_path=str(train_cfg.get("expert_data_path", "data/expert_trajectories.json")),
+            expert_checkpoint_path=str(train_cfg.get("expert_checkpoint_path", "checkpoints/qmix_final.pt")),
+            bc_eval_samples=int(train_cfg.get("bc_eval_samples", 512)),
+            freeze_actor_steps=int(train_cfg.get("freeze_actor_steps", 1500)),
+            actor_lr_scale=float(train_cfg.get("actor_lr_scale", 0.008)),
+            adv_clip_abs=float(train_cfg.get("adv_clip_abs", 2.0)),
+            kl_threshold=float(train_cfg.get("kl_threshold", 0.02)),
+            kl_lr_backoff=float(train_cfg.get("kl_lr_backoff", 0.5)),
+            min_actor_lr_scale=float(train_cfg.get("min_actor_lr_scale", 0.02)),
+            kl_early_stop_threshold=float(train_cfg.get("kl_early_stop_threshold", 0.015)),
+            ppo_update_epochs=int(train_cfg.get("ppo_update_epochs", 3)),
+            kl_loss_scale_threshold=float(train_cfg.get("kl_loss_scale_threshold", 0.015)),
+            kl_loss_scale_factor=float(train_cfg.get("kl_loss_scale_factor", 0.5)),
+            update_every_episodes=int(train_cfg.get("update_every_episodes", 5)),
+            rollout_horizon=int(train_cfg.get("rollout_horizon", 50)),
+            return_normalize_enabled=bool(train_cfg.get("return_normalize_enabled", True)),
         )
         env = DisasterEnv(
             seed=seed,
@@ -83,6 +125,14 @@ def _build_agent(method: str, seed: int, train_cfg: Dict[str, Any], env_obs_dim:
             hazard_rate=float(train_cfg.get("hazard_rate", 0.22)),
         )
         return LagrangianCTDE(env=env, config=cfg), env
+
+    if method == "random":
+        env = DisasterEnv(
+            seed=seed,
+            observation_noise=float(train_cfg.get("observation_noise", 0.02)),
+            hazard_rate=float(train_cfg.get("hazard_rate", 0.22)),
+        )
+        return RandomAgent(n_agents=n_agents, n_actions=n_actions, seed=seed), env
 
     kwargs = dict(
         obs_dim=env_obs_dim,
@@ -350,7 +400,7 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument(
         "--method",
         required=False,
-        choices=["lagrangian_ctde", "dqn", "ippo", "qmix", "mappo", "cpo"],
+        choices=["lagrangian_ctde", "dqn", "ippo", "qmix", "mappo", "cpo", "random"],
         help="Override method from config and run only that method",
     )
     return p.parse_args()

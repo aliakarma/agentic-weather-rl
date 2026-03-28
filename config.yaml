@@ -37,6 +37,42 @@ training:
   rollout_len: 128
   ppo_epochs: 4
 
+  # ========== IMPROVEMENTS FOR LAGRANGIAN CTDE ==========
+  
+  # 1. Adaptive dual ascent (HEAVILY REDUCED for reward recovery)
+  lr_lambda: 0.00001            # GREATLY REDUCED - almost no lambda updates after warmup
+  target_constraint: 0.10        # target constraint level
+  
+  # 1.5. Reward-First Warmup Phase (EXTENDED)
+  warmup_phase_enabled: true
+  warmup_fraction: 0.50          # First 50% of training: lambda = 0 (DOUBLED)
+  
+  # 2. Curriculum scheduling for constraints (MUCH WEAKER)
+  lambda_curriculum_enabled: true
+  lambda_curriculum_min: 0.00001  # MINIMAL - almost zero start
+  lambda_curriculum_max: 0.01     # REDUCED from 0.04 - 75% reduction
+  
+  # 3. Entropy regularization for exploration (MUCH HIGHER)
+  alpha_entropy: 0.10            # INCREASED from 0.03 - 3.3x boost for exploration
+  
+  # 4. Reward component normalization (STRONGLY POSITIVE BIAS)
+  reward_weights:
+    damage_prevented: 5.0        # INCREASED from 2.0 - strong positive signal
+    damage_penalty: -0.1         # REDUCED from -0.5 - minimal penalty
+    resource_cost: -0.001        # REDUCED from -0.005 - almost no penalty
+    constraint_penalty: -0.5     # REDUCED from -3.0 - weak constraint pressure
+  reward_normalize_enabled: true
+  
+  # 5. Advantage normalization
+  advantage_normalize_enabled: true
+  
+  # 6. Exploration noise improvements
+  exploration_noise_enabled: true
+  exploration_noise_schedule: "exponential"
+  
+  # 7. Hybrid value signal (optional)
+  hybrid_value_enabled: false
+
 evaluation:
   eval_episodes: 200
   eval_seed_base: 10000

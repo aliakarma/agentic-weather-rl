@@ -1,6 +1,6 @@
 {
   "method": "lagrangian_ctde",
-  "git_commit": "f900e6da8bacaf707dcb6e6cc19fd19113cbca4c",
+  "git_commit": "76c0c80f1c4d91daef4b2321ecef0f103b35b2e1",
   "seeds": [
     0,
     1,
@@ -15,23 +15,23 @@
   ],
   "summary": {
     "n_runs": 10,
-    "reward_mean": -187.74398500000004,
-    "reward_std": 0.49945820712547856,
+    "reward_mean": -293.44876200000004,
+    "reward_std": 1.194793011276844,
     "reward_ci95": {
-      "low": -188.12060265358912,
-      "high": -187.36736734641096
+      "low": -294.3496985228404,
+      "high": -292.5478254771597
     },
-    "constraint_mean": 0.009290000000000001,
-    "constraint_std": 5.38516480713449e-05,
+    "constraint_mean": 0.0,
+    "constraint_std": 0.0,
     "constraint_ci95": {
-      "low": 0.009249393036195642,
-      "high": 0.009330606963804361
+      "low": NaN,
+      "high": NaN
     },
-    "fairness_mean": 0.9259731814196431,
-    "fairness_std": 0.0001538449458879739,
+    "fairness_mean": 0.6578080284840123,
+    "fairness_std": 0.0001750238957171042,
     "fairness_ci95": {
-      "low": 0.9258571742708762,
-      "high": 0.92608918856841
+      "low": 0.6576760512975599,
+      "high": 0.6579400056704647
     }
   }
 }

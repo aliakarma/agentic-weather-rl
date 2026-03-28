@@ -7,12 +7,15 @@ authors:
     orcid: https://orcid.org/0009-0002-6687-9380
   - family-names: Syed
     given-names: Toqeer Ali
-  - family-names: Jan
+    orcid: https://orcid.org/0000-0002-3936-5483
+- family-names: Jan
     given-names: Salman
+    orcid: https://orcid.org/0000-0002-8250-694X
   - family-names: Hameed
     given-names: Danial
   - family-names: Kamal
     given-names: Shahid
+    https://orcid.org/0009-0009-7995-175X
 version: 2.0.1
 date-released: 2026-03-14
 repository-code: https://github.com/aliakarma/agentic-weather-rl

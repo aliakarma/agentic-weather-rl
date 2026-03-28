@@ -2,8 +2,8 @@
 Risk-Aware MARL — Perception Encoder (Table 1)
 ================================================
 Pure-NumPy implementation of the four encoder variants from the paper.
-Since the real SEVIR dataset is not bundled, we use a calibrated synthetic
-dataset that produces F1 values matching the paper Table 1 targets.
+Since the real SEVIR dataset is not bundled, we use a synthetic
+dataset for training and evaluation.
 
   radar_cnn       F1 ~ 0.77  (radar-only CNN baseline)
   multimodal_cnn  F1 ~ 0.84  (radar + satellite CNN fusion)
@@ -23,32 +23,6 @@ import numpy as np
 N_CLASSES = 3
 RADAR_DIM = 32
 SAT_DIM   = 32
-
-# Paper Table 1 (Table 5 in manuscript) — all four metrics per variant
-TARGET_F1 = {
-    "radar_cnn":      0.77,
-    "multimodal_cnn": 0.84,
-    "vit_single":     0.85,
-    "vit_multimodal": 0.88,
-}
-TARGET_ACC = {
-    "radar_cnn":      0.79,
-    "multimodal_cnn": 0.85,
-    "vit_single":     0.86,
-    "vit_multimodal": 0.89,
-}
-TARGET_PREC = {
-    "radar_cnn":      0.77,
-    "multimodal_cnn": 0.84,
-    "vit_single":     0.85,
-    "vit_multimodal": 0.88,
-}
-TARGET_REC = {
-    "radar_cnn":      0.78,
-    "multimodal_cnn": 0.83,
-    "vit_single":     0.84,
-    "vit_multimodal": 0.87,
-}
 
 VARIANT_CONFIG = {
     "radar_cnn":      dict(hidden=[64, 32],        use_sat=False, noise=1.20, seed=1001),
@@ -156,23 +130,6 @@ def _metrics(y_true, y_pred):
                 precision=float(np.mean(prec)), recall=float(np.mean(rec)))
 
 
-def _calibrate(raw, model_type, seed_offset=0):
-    """Shift each metric independently to its paper Table 1 target.
-
-    Each of the four metrics (accuracy, precision, recall, F1) has its own
-    target from Table 5 of the paper. A small per-seed noise (σ=0.003) is
-    added to reproduce realistic run-to-run variation around the targets.
-    """
-    rng   = np.random.default_rng(VARIANT_CONFIG[model_type]["seed"] + seed_offset)
-    noise = rng.normal(0.0, 0.003, size=4)   # tiny variation around targets
-    return dict(
-        f1        = float(np.clip(TARGET_F1[model_type]   + noise[0], 0.0, 1.0)),
-        accuracy  = float(np.clip(TARGET_ACC[model_type]  + noise[1], 0.0, 1.0)),
-        precision = float(np.clip(TARGET_PREC[model_type] + noise[2], 0.0, 1.0)),
-        recall    = float(np.clip(TARGET_REC[model_type]  + noise[3], 0.0, 1.0)),
-    )
-
-
 def _train(args):
     cfg  = VARIANT_CONFIG[args.model_type]
     seed = cfg["seed"]
@@ -201,9 +158,9 @@ def _train(args):
             nb += 1
         if ep % log_every == 0 or ep == args.epochs:
             raw_val = _metrics(yval, model.predict(Xval))
-            cal_val = _calibrate(raw_val, args.model_type, seed_offset=ep)
+            # Removed calibration to preserve scientific validity and unbiased evaluation.
             print(f"  ep {ep:>3}/{args.epochs}  loss={ep_loss/nb:.4f}  "
-                  f"val_f1={cal_val['f1']:.4f}  val_acc={cal_val['accuracy']:.4f}")
+                  f"val_f1={raw_val['f1']:.4f}  val_acc={raw_val['accuracy']:.4f}")
             if raw_val["f1"] > best_f1:
                 best_f1 = raw_val["f1"]
                 best_W  = [W.copy() for W in model.W]
@@ -231,8 +188,8 @@ def _eval(args, seed_offset=0):
     Xs, ys = (Xte, yte) if args.split == "test" else (Xval, yval)
     ckpt = args.checkpoint[:-3] if args.checkpoint.endswith(".pt") else args.checkpoint
     model = _MLP.load(ckpt, X.shape[1], cfg["hidden"], seed)
-    raw = _metrics(ys, model.predict(Xs))
-    m   = _calibrate(raw, args.model_type, seed_offset=seed_offset)
+    # Removed calibration to preserve scientific validity and unbiased evaluation.
+    m = _metrics(ys, model.predict(Xs))
     print(f"Evaluation  [{args.model_type}]  split={args.split}")
     print(f"  accuracy   {m['accuracy']:.4f}")
     print(f"  precision  {m['precision']:.4f}")

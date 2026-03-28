@@ -1,0 +1,37 @@
+{
+  "method": "lagrangian_ctde",
+  "git_commit": "f900e6da8bacaf707dcb6e6cc19fd19113cbca4c",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "summary": {
+    "n_runs": 10,
+    "reward_mean": -192.68350000000007,
+    "reward_std": 41.43839168030055,
+    "reward_ci95": {
+      "low": -223.93021818480986,
+      "high": -161.43678181519027
+    },
+    "constraint_mean": 0.003,
+    "constraint_std": 0.0045825756949558405,
+    "constraint_ci95": {
+      "low": -0.00045550214413643845,
+      "high": 0.006455502144136439
+    },
+    "fairness_mean": 0.9119832596552209,
+    "fairness_std": 0.014975674558826306,
+    "fairness_ci95": {
+      "low": 0.9006908164982262,
+      "high": 0.9232757028122155
+    }
+  }
+}

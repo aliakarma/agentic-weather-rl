@@ -1,0 +1,37 @@
+{
+  "method": "cpo",
+  "git_commit": "f900e6da8bacaf707dcb6e6cc19fd19113cbca4c",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "summary": {
+    "n_runs": 10,
+    "reward_mean": -779.514544,
+    "reward_std": 223.73847038719168,
+    "reward_ci95": {
+      "low": -948.2250717932999,
+      "high": -610.8040162067001
+    },
+    "constraint_mean": 0.055589999999999994,
+    "constraint_std": 0.11253627370763614,
+    "constraint_ci95": {
+      "low": -0.0292682458807828,
+      "high": 0.14044824588078278
+    },
+    "fairness_mean": 0.5279632684527852,
+    "fairness_std": 0.2179171010766767,
+    "fairness_ci95": {
+      "low": 0.363642358087177,
+      "high": 0.6922841788183933
+    }
+  }
+}

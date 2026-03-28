@@ -280,7 +280,8 @@ for seed_idx in range(N_TTEST_SEEDS):
                 except (ValueError, IndexError):
                     pass
         if f1_val is not None:
-            ttest_f1[variant].append(f1_val + np.random.normal(0, 0.005))
+            # Removed calibration to preserve scientific validity and unbiased evaluation.
+            ttest_f1[variant].append(f1_val)
         else:
             ttest_f1[variant].append(eval_metrics[variant].get("f1") or 0.0)
 

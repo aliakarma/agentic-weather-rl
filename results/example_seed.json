@@ -1,0 +1,35 @@
+{
+  "seed": 0,
+  "method": "lagrangian_ctde",
+  "git_commit": "example-commit",
+  "config_hash": "example-config-hash",
+  "reward": -204.8,
+  "accuracy": null,
+  "fairness_metrics": {
+    "jain_action_index": 0.9821,
+    "action_balance_std": 0.0362,
+    "agent_1_action_mean": 1.93,
+    "agent_2_action_mean": 1.82,
+    "agent_3_action_mean": 1.88
+  },
+  "constraint_violations": {
+    "mean": 0.007,
+    "std": 0.0131
+  },
+  "damage_metrics": {
+    "avg_damage_prevented": 1.2965,
+    "avg_damage_after": 2.5508
+  },
+  "robustness_metrics": {
+    "noise_level": 0.05,
+    "reward_mean": -193.5,
+    "reward_delta": 11.3,
+    "reward_ratio": 0.9448
+  },
+  "raw_metrics": {
+    "reward_mean": -204.8,
+    "reward_std": 101.18,
+    "violation_rate_mean": 0.007,
+    "fairness_jain_action_index": 0.9821
+  }
+}

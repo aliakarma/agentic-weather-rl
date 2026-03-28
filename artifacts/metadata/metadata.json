@@ -1,0 +1,32 @@
+{
+  "git_commit_hash": "f900e6da8bacaf707dcb6e6cc19fd19113cbca4c",
+  "timestamp_utc": "2026-03-28T04:36:51.120041+00:00",
+  "number_of_methods": 6,
+  "number_of_seeds_per_method": {
+    "cpo": 10,
+    "dqn": 10,
+    "ippo": 10,
+    "lagrangian_ctde": 10,
+    "mappo": 10,
+    "qmix": 10
+  },
+  "warnings": [
+    "Duplicate method/seed pair skipped: lagrangian_ctde seed=0 (C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\results\\quick_validation\\seed_0.json)",
+    "Duplicate method/seed pair skipped: lagrangian_ctde seed=1 (C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\results\\quick_validation\\seed_1.json)",
+    "Duplicate method/seed pair skipped: lagrangian_ctde seed=2 (C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\results\\quick_validation\\seed_2.json)",
+    "Duplicate method/seed pair skipped: lagrangian_ctde seed=3 (C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\results\\quick_validation\\seed_3.json)",
+    "Duplicate method/seed pair skipped: lagrangian_ctde seed=4 (C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\results\\quick_validation\\seed_4.json)",
+    "Duplicate method/seed pair skipped: lagrangian_ctde seed=5 (C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\results\\quick_validation\\seed_5.json)",
+    "Duplicate method/seed pair skipped: lagrangian_ctde seed=6 (C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\results\\quick_validation\\seed_6.json)",
+    "Duplicate method/seed pair skipped: lagrangian_ctde seed=7 (C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\results\\quick_validation\\seed_7.json)",
+    "Duplicate method/seed pair skipped: lagrangian_ctde seed=8 (C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\results\\quick_validation\\seed_8.json)",
+    "Duplicate method/seed pair skipped: lagrangian_ctde seed=9 (C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\results\\quick_validation\\seed_9.json)"
+  ],
+  "copied_config_files": [
+    "C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\config.yaml",
+    "C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\configs\\default.yaml",
+    "C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\configs\\environment.yaml",
+    "C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\configs\\perception.yaml",
+    "C:\\Users\\Ali Akarma\\Desktop\\Github\\agentic-weather-rl\\agentic-weather-rl\\configs\\training.yaml"
+  ]
+}

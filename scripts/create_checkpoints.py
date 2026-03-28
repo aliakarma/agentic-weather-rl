@@ -1,6 +1,5 @@
 """
 Create pretrained placeholder checkpoint for the LagrangianCTDE demo.
-The weights are tuned to reproduce Table 2 evaluation numbers.
 """
 import os
 import pickle
@@ -40,8 +39,6 @@ ckpt = {
     "metadata": {
         "algo": "lagrangian_ctde",
         "paper": "Risk-Aware MARL for Cloudburst Disaster Response",
-        "reward_mean": 81.5,
-        "violation_rate": 0.023,
     },
 }
 

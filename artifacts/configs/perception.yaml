@@ -1,0 +1,70 @@
+# ============================================================
+#  configs/perception.yaml
+#  Multi-modal ViT-B/16 perception encoder configuration.
+#  Matches the implementation described in Section 4.2 of the paper.
+#  Used by src/models/vit_encoder.py and src/train.py (perception stage).
+# ============================================================
+
+# Inherit shared defaults
+defaults:
+  - default
+
+# ── Model architecture ────────────────────────────────────────
+backbone: vit_base_patch16_224  # timm model name: ViT-B/16 at 224×224
+pretrained: true                # load ImageNet-21k weights on first run (~330 MB)
+                                # downloaded automatically by timm
+
+output_dim: 128                 # d_φ = 128  (dimension of φ_t; Eq. 1 of paper)
+mlp_hidden: 256                 # hidden size of the two-layer projection MLP
+mlp_layers: 2                   # MLP depth after CLS token concatenation
+
+# ── Input preprocessing ───────────────────────────────────────
+input_size: 224                 # resize radar and satellite frames to 224×224
+modalities:
+  - radar                       # NEXRAD WSR-88D reflectivity
+  - satellite                   # GOES-16 ABI visible/IR
+channels:
+  radar: 1                      # single-channel reflectivity field
+  satellite: 3                  # RGB / multi-spectral GOES channels
+
+# ── Training schedule ─────────────────────────────────────────
+epochs: 50
+lr: 1.0e-4                      # initial learning rate (AdamW)
+weight_decay: 1.0e-2            # L2 regularisation
+optimizer: adamw
+scheduler: cosine               # cosine annealing over all epochs
+warmup_epochs: 5                # linear LR warmup before cosine decay
+batch_size: 32
+
+# ── Data split ────────────────────────────────────────────────
+train_split: 0.80
+val_split: 0.10
+test_split: 0.10
+stratify_by: storm_intensity    # ensures balanced intensity distribution
+
+# ── Dataset paths ─────────────────────────────────────────────
+# Paths used when retraining from scratch (see README Full Datasets section).
+sevir_dir: data/sevir/
+goes_dir: data/goes16/
+nexrad_dir: data/nexrad/
+sample_dir: data/sample/        # 50-storm SEVIR subset for Colab / quick tests
+
+# ── Ablation model types ──────────────────────────────────────
+# Used by scripts/train_perception_ablation.sh and colab_perception.ipynb
+# to reproduce Table 1 of the paper.
+model_types:
+  radar_cnn:
+    description: Radar-only CNN baseline
+    expected_f1: 0.77
+  multimodal_cnn:
+    description: Multi-modal CNN baseline
+    expected_f1: 0.84
+  vit_single:
+    description: ViT single-modal (radar only)
+    expected_f1: 0.85
+  vit_multimodal:
+    description: ViT multi-modal fine-tuned (proposed)
+    expected_f1: 0.88
+
+# ── Checkpoint ────────────────────────────────────────────────
+output_checkpoint: checkpoints/perception_encoder.pt

@@ -1,0 +1,82 @@
+{
+  "methods": {
+    "cpo": {
+      "n_runs": 10,
+      "reward_mean": -779.514544,
+      "reward_std": 223.73847038719168,
+      "reward_ci95": {
+        "low": -948.2250717932999,
+        "high": -610.8040162067001
+      },
+      "fairness_mean": 0.5279632684527852,
+      "fairness_std": 0.2179171010766767,
+      "constraint_mean": 0.055589999999999994,
+      "constraint_std": 0.11253627370763614
+    },
+    "dqn": {
+      "n_runs": 10,
+      "reward_mean": -44.446364000000024,
+      "reward_std": 5.028047864543858,
+      "reward_ci95": {
+        "low": -48.237775497223396,
+        "high": -40.65495250277665
+      },
+      "fairness_mean": 0.9004951442521291,
+      "fairness_std": 0.06768185037623946,
+      "constraint_mean": 0.033030000000000004,
+      "constraint_std": 0.060657102634398885
+    },
+    "ippo": {
+      "n_runs": 10,
+      "reward_mean": -790.0719330000001,
+      "reward_std": 222.71958198300754,
+      "reward_ci95": {
+        "low": -958.0141655594275,
+        "high": -622.1297004405726
+      },
+      "fairness_mean": 0.42451388121950845,
+      "fairness_std": 0.10290932328273894,
+      "constraint_mean": 0.00128,
+      "constraint_std": 0.00384
+    },
+    "lagrangian_ctde": {
+      "n_runs": 10,
+      "reward_mean": -187.74398500000004,
+      "reward_std": 0.49945820712547856,
+      "reward_ci95": {
+        "low": -188.12060265358912,
+        "high": -187.36736734641096
+      },
+      "fairness_mean": 0.9259731814196431,
+      "fairness_std": 0.0001538449458879739,
+      "constraint_mean": 0.009290000000000001,
+      "constraint_std": 5.38516480713449e-05
+    },
+    "mappo": {
+      "n_runs": 10,
+      "reward_mean": -711.4791940000001,
+      "reward_std": 182.8110806472915,
+      "reward_ci95": {
+        "low": -849.3283258417171,
+        "high": -573.6300621582832
+      },
+      "fairness_mean": 0.5099738228128466,
+      "fairness_std": 0.23219976325095093,
+      "constraint_mean": 0.0,
+      "constraint_std": 0.0
+    },
+    "qmix": {
+      "n_runs": 10,
+      "reward_mean": -38.83117600000001,
+      "reward_std": 2.6897345694108923,
+      "reward_ci95": {
+        "low": -40.85937677407294,
+        "high": -36.802975225927085
+      },
+      "fairness_mean": 0.8847552387904118,
+      "fairness_std": 0.07912008348575347,
+      "constraint_mean": 0.03374,
+      "constraint_std": 0.02846261407530939
+    }
+  }
+}

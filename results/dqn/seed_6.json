@@ -1,0 +1,52 @@
+{
+  "seed": 6,
+  "method": "dqn",
+  "git_commit": "f900e6da8bacaf707dcb6e6cc19fd19113cbca4c",
+  "config_hash": "46dc36057b422bc8",
+  "reward": -38.74028000000001,
+  "accuracy": null,
+  "fairness_metrics": {
+    "jain_action_index": 0.7434028208484365,
+    "action_balance_std": 0.8067856647765186,
+    "agent_1_action_mean": 1.445,
+    "agent_2_action_mean": 0.35119999999999996,
+    "agent_3_action_mean": 2.3235
+  },
+  "constraint_violations": {
+    "mean": 0.0,
+    "std": 0.0
+  },
+  "damage_metrics": {
+    "avg_damage_prevented": 1.2674959999999993,
+    "avg_damage_after": 0.4112639999999999
+  },
+  "robustness_metrics": {
+    "noise_level": 0.05,
+    "reward_mean": -38.217660000000016,
+    "reward_delta": 0.5226199999999963,
+    "reward_ratio": 0.9865096486103121
+  },
+  "raw_metrics": {
+    "cumulative_reward_mean": -38.74028000000001,
+    "cumulative_reward_std": 22.939718770760905,
+    "reward_mean": -38.74028000000001,
+    "reward_std": 22.939718770760905,
+    "violation_rate_mean": 0.0,
+    "violation_rate_std": 0.0,
+    "avg_damage_prevented_mean": 1.2674959999999993,
+    "avg_damage_prevented_std": 0.23214709212910684,
+    "avg_damage_after_mean": 0.4112639999999999,
+    "avg_damage_after_std": 0.33579273473974985,
+    "observation_noise_mean": 0.019999999999999997,
+    "fairness_action_balance_std": 0.8067856647765186,
+    "fairness_jain_action_index": 0.7434028208484365,
+    "agent_1_action_mean": 1.445,
+    "agent_2_action_mean": 0.35119999999999996,
+    "agent_3_action_mean": 2.3235,
+    "robustness_noise_level": 0.05,
+    "robustness_reward_mean": -38.217660000000016,
+    "robustness_damage_prevented_mean": 1.2496719999999994,
+    "robustness_reward_delta": 0.5226199999999963,
+    "robustness_reward_ratio": 0.9865096486103121
+  }
+}

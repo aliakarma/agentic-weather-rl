@@ -1,0 +1,41 @@
+# ============================================================
+#  configs/training.yaml
+#  MARL training hyperparameters — matches Table 3 of the paper exactly.
+#  All values are used directly by src/train.py and src/algorithms/ppo.py.
+# ============================================================
+
+# Inherit shared defaults
+defaults:
+  - default
+
+# ── Core PPO hyperparameters ─────────────────────────────────
+episodes: 1000                 # total training episodes
+gamma: 0.99                    # discount factor γ
+lr: 3.0e-4                     # actor and critic learning rate
+clip: 0.2                      # PPO clipping threshold ε  (Eq. 8 of paper)
+gae_lambda: 0.95               # GAE λ parameter for advantage estimation
+entropy_coef: 0.01             # entropy bonus coefficient
+mini_batches: 4                # number of mini-batch updates per policy step
+batch_size: 64                 # rollout batch size
+
+# ── Lagrangian constraint parameters ─────────────────────────
+# Implements the primal-dual update from Algorithm 1 of the paper
+lagrangian_lr: 1.0e-3          # dual variable step size α_λ
+constraint_d: 0.10             # per-agent constraint threshold d_i
+                               # (max tolerable violation rate = 10%)
+
+# ── Reproducibility ──────────────────────────────────────────
+seeds: [0, 1, 2, 3, 4]        # 5 independent seeds for statistical reporting
+
+# ── Network architecture ─────────────────────────────────────
+actor_hidden: 256              # decentralised actor MLP hidden size (Section 4.3)
+critic_hidden: 512             # centralised critic MLP hidden size  (Section 4.3)
+actor_layers: 2                # number of hidden layers in actor
+critic_layers: 3               # number of hidden layers in critic
+
+# ── Operating mode ───────────────────────────────────────────
+# "synthetic" : φ_t replaced by 24-dim analytic risk representation (default)
+# "perception": uses ViT encoder output (d_φ=128); requires perception_encoder.pt
+mode: synthetic
+
+perception_checkpoint: checkpoints/perception_encoder.pt

@@ -93,13 +93,12 @@ print("DEMO RESULTS (20 episodes)")
 print("=" * 55)
 print(f"  Reward          : {metrics['reward_mean']:.2f} ± {metrics['reward_std']:.2f}")
 print(f"  Violation Rate  : {metrics['violation_rate_mean']:.4f} ± {metrics['violation_rate_std']:.4f}")
-for i, name in zip(range(1, 4), ["Storm", "Flood", "Evacuation"]):
-    m = metrics[f'decision_accuracy_{i}_mean']
-    s = metrics[f'decision_accuracy_{i}_std']
-    print(f"  DA Agent {i} ({name:<10}): {m:.4f} ± {s:.4f}")
+print(f"  Damage Prevented: {metrics['avg_damage_prevented_mean']:.4f} ± {metrics['avg_damage_prevented_std']:.4f}")
+print(f"  Residual Damage : {metrics['avg_damage_after_mean']:.4f} ± {metrics['avg_damage_after_std']:.4f}")
+print(f"  Robustness ΔR   : {metrics['robustness_reward_delta']:.2f}  (noise={metrics['robustness_noise_level']:.3f})")
+print(f"  Robustness Ratio: {metrics['robustness_reward_ratio']:.4f}")
 print()
-print("Paper Table 2 targets (5-seed, 500 eps):")
-print("  Reward=81.5±2.6  VR=2.3%  DA: 0.91/0.87/0.84")
+print("Outcome-based evaluation metrics reported without oracle action matching.")
 print("=" * 55)
 
 # ── Cell 5: Trajectory Visualisation ─────────────────────────────────────────

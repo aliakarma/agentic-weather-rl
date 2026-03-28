@@ -1,0 +1,37 @@
+{
+  "method": "ippo",
+  "git_commit": "f900e6da8bacaf707dcb6e6cc19fd19113cbca4c",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "summary": {
+    "n_runs": 10,
+    "reward_mean": -790.0719330000001,
+    "reward_std": 222.71958198300754,
+    "reward_ci95": {
+      "low": -958.0141655594275,
+      "high": -622.1297004405726
+    },
+    "constraint_mean": 0.00128,
+    "constraint_std": 0.00384,
+    "constraint_ci95": {
+      "low": -0.0016155611683817013,
+      "high": 0.004175561168381701
+    },
+    "fairness_mean": 0.42451388121950845,
+    "fairness_std": 0.10290932328273894,
+    "fairness_ci95": {
+      "low": 0.3469148602919205,
+      "high": 0.5021129021470965
+    }
+  }
+}

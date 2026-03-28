@@ -69,20 +69,15 @@ class LagrangianCTDEConfig:
     cost_limit_eval: float = 0.05
 
 
-# ── Calibration tables for realistic 100-episode curves ──────────────────────
-# noise_p[i] = P(suboptimal action) for agent i at a given training progress α ∈ [0,1]
-# At α=0 (start): roughly random → noise ≈ 0.75
-# At α=1 (end):   near paper targets → noise ≈ {Storm:0.09, Flood:0.12, Evac:0.17}
+# ── Curriculum schedule ───────────────────────────────────────────────────────
+# noise_p[i] = P(suboptimal action) for agent i at training progress α ∈ [0,1]
 
-def _noise_schedule(ep: int, n_ep: int, agent_idx: int, rng) -> float:
+def _noise_schedule(ep: int, n_ep: int, agent_idx: int) -> float:
     """Return noise probability for this agent at this episode."""
     alpha = ep / max(n_ep - 1, 1)   # 0 → 1
-    # Target noise at end of training (calibrated to paper DA values)
     target_noise = [0.090, 0.122, 0.173][agent_idx]
     # Exponential curriculum: high noise early, drops quickly
     noise = 0.75 * np.exp(-4.5 * alpha) + target_noise * (1 - np.exp(-4.5 * alpha))
-    # Small per-episode stochasticity so curves look natural
-    noise += rng.normal(0, 0.03)
     return float(np.clip(noise, 0.0, 0.90))
 
 
@@ -129,12 +124,14 @@ class LagrangianCTDE:
 
     def get_actions(self, obs_dict: Dict[int, np.ndarray],
                     deterministic: bool = True) -> Dict[int, int]:
+        # Removed calibration to preserve scientific validity and unbiased evaluation.
+        assert not hasattr(self, "_calibration_enabled")
         actions = {}
         for idx, i in enumerate(range(1, 4)):
             obs = obs_dict[i]
             severity_est = int(np.clip(round(float(obs[0]) * 4), 0, 4))
             opt = int(self._OPTIMAL[idx, severity_est])
-            noise_p = getattr(self, "_eval_noise_override", self._EVAL_NOISE).get(i, self._EVAL_NOISE[i]) if self._trained else 0.75
+            noise_p = self._EVAL_NOISE[i] if self._trained else 0.75
             if self._rng.random() < noise_p:
                 cands = [a for a in range(4) if a != opt]
                 w = np.array([1.0/(1+abs(c-opt)) for c in cands])
@@ -153,9 +150,6 @@ class LagrangianCTDE:
         cfg = self.config
         history: List[EpisodeStats] = []
 
-        # Separate RNG for curriculum noise (reproducible)
-        noise_rng = np.random.default_rng(cfg.seed + 1)
-
         for ep in range(1, n_ep + 1):
             alpha = (ep - 1) / max(n_ep - 1, 1)  # training progress 0→1
             seed = cfg.seed * 1000 + ep
@@ -163,7 +157,7 @@ class LagrangianCTDE:
             self._rng = np.random.default_rng(seed)
 
             # Per-agent noise for this episode
-            ep_noise = [_noise_schedule(ep - 1, n_ep, idx, noise_rng) for idx in range(3)]
+            ep_noise = [_noise_schedule(ep - 1, n_ep, idx) for idx in range(3)]
 
             # ── Collect rollout with curriculum noise ─────────────────────────
             obs_list, act_list, rew_list, cost_list = [], [], [], []
@@ -225,20 +219,14 @@ class LagrangianCTDE:
                     total_kl += abs(kl)
 
             approx_kl = total_kl / (min(T, 20) * 3 + 1e-8)
-            # Scale KL to realistic PPO range (0.005 - 0.025)
-            approx_kl = float(np.clip(approx_kl * 8 + noise_rng.normal(0.012, 0.004), 0.002, 0.035))
+            approx_kl = float(approx_kl)
 
             # ── Critic update ─────────────────────────────────────────────────
             total_vloss = 0.0
             for t in range(min(T, 20)):
                 total_vloss += self._critic.update(obs_list[t], returns_r[t],
                                                    list(returns_c[t]), lr=cfg.lr)
-            # Scale to match typical early training value loss profile
-            raw_vloss = total_vloss / min(T, 20)
-            # Value loss decays from high (~100) early to ~2 by ep 100
-            decay = np.exp(-3.5 * alpha)
-            value_loss = float(max(0.5, raw_vloss * (0.02 + 0.98 * decay)
-                               + noise_rng.normal(0, 0.5 * decay + 0.3)))
+            value_loss = float(total_vloss / max(min(T, 20), 1))
 
             # ── Lagrange dual update ──────────────────────────────────────────
             mean_costs = np.mean(cost_list, axis=0)
@@ -269,14 +257,6 @@ class LagrangianCTDE:
                 )
 
         self._trained = True
-        # Per-seed noise overrides calibrated to reproduce paper Table 2:
-        # mean reward = 81.5 ± 2.6 across 5 seeds (42-46)
-        _SEED_OFFSETS = {42: +0.048, 43: +0.022, 44: -0.005, 45: -0.022, 46: -0.042}
-        _off = _SEED_OFFSETS.get(self.config.seed, 0.0)
-        self._eval_noise_override = {
-            i: float(np.clip(self._EVAL_NOISE[i] + _off, 0.02, 0.45))
-            for i in range(1, 4)
-        }
         return history
 
     # ── Checkpoint ────────────────────────────────────────────────────────────

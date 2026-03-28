@@ -41,16 +41,16 @@
     },
     "lagrangian_ctde": {
       "n_runs": 10,
-      "reward_mean": -187.74398500000004,
-      "reward_std": 0.49945820712547856,
+      "reward_mean": -293.245979,
+      "reward_std": 1.0282334949168839,
       "reward_ci95": {
-        "low": -188.12060265358912,
-        "high": -187.36736734641096
+        "low": -294.0213209218517,
+        "high": -292.47063707814823
       },
-      "fairness_mean": 0.9259731814196431,
-      "fairness_std": 0.0001538449458879739,
-      "constraint_mean": 0.009290000000000001,
-      "constraint_std": 5.38516480713449e-05
+      "fairness_mean": 0.6581087373954553,
+      "fairness_std": 9.206570969067125e-05,
+      "constraint_mean": 0.0,
+      "constraint_std": 0.0
     },
     "mappo": {
       "n_runs": 10,

@@ -1,52 +1,52 @@
 {
   "seed": 6,
   "method": "lagrangian_ctde",
-  "git_commit": "76c0c80f1c4d91daef4b2321ecef0f103b35b2e1",
-  "config_hash": "7e7484b416a2f25f",
-  "reward": -293.19705,
+  "git_commit": "5f7c28afd828c1e7bb9ded87073af61aea56a8f2",
+  "config_hash": "930a54632a2c1fb3",
+  "reward": -293.37005999999997,
   "accuracy": null,
   "fairness_metrics": {
-    "jain_action_index": 0.6578978977088024,
-    "action_balance_std": 0.861961071562335,
+    "jain_action_index": 0.6580001335739563,
+    "action_balance_std": 0.8622939998760412,
     "agent_1_action_mean": 0.0,
     "agent_2_action_mean": 2.0,
-    "agent_3_action_mean": 1.5859999999999999
+    "agent_3_action_mean": 1.5881999999999998
   },
   "constraint_violations": {
     "mean": 0.0,
     "std": 0.0
   },
   "damage_metrics": {
-    "avg_damage_prevented": 1.0508700000000006,
-    "avg_damage_after": 2.7231600000000005
+    "avg_damage_prevented": 1.0516620000000005,
+    "avg_damage_after": 2.7230580000000004
   },
   "robustness_metrics": {
     "noise_level": 0.05,
-    "reward_mean": -294.7973,
-    "reward_delta": -1.6002500000000168,
-    "reward_ratio": 1.0054579335298721
+    "reward_mean": -294.53637,
+    "reward_delta": -1.16631000000001,
+    "reward_ratio": 1.0039755590943389
   },
   "raw_metrics": {
-    "cumulative_reward_mean": -293.19705,
-    "cumulative_reward_std": 200.28436949666715,
-    "reward_mean": -293.19705,
-    "reward_std": 200.28436949666715,
+    "cumulative_reward_mean": -293.37005999999997,
+    "cumulative_reward_std": 200.57082444243082,
+    "reward_mean": -293.37005999999997,
+    "reward_std": 200.57082444243082,
     "violation_rate_mean": 0.0,
     "violation_rate_std": 0.0,
-    "avg_damage_prevented_mean": 1.0508700000000006,
-    "avg_damage_prevented_std": 0.12654868746850004,
-    "avg_damage_after_mean": 2.7231600000000005,
-    "avg_damage_after_std": 1.018256911393191,
+    "avg_damage_prevented_mean": 1.0516620000000005,
+    "avg_damage_prevented_std": 0.12670520808554042,
+    "avg_damage_after_mean": 2.7230580000000004,
+    "avg_damage_after_std": 1.0211092736019982,
     "observation_noise_mean": 0.019999999999999997,
-    "fairness_action_balance_std": 0.861961071562335,
-    "fairness_jain_action_index": 0.6578978977088024,
+    "fairness_action_balance_std": 0.8622939998760412,
+    "fairness_jain_action_index": 0.6580001335739563,
     "agent_1_action_mean": 0.0,
     "agent_2_action_mean": 2.0,
-    "agent_3_action_mean": 1.5859999999999999,
+    "agent_3_action_mean": 1.5881999999999998,
     "robustness_noise_level": 0.05,
-    "robustness_reward_mean": -294.7973,
-    "robustness_damage_prevented_mean": 1.0465920000000006,
-    "robustness_reward_delta": -1.6002500000000168,
-    "robustness_reward_ratio": 1.0054579335298721
+    "robustness_reward_mean": -294.53637,
+    "robustness_damage_prevented_mean": 1.0474800000000004,
+    "robustness_reward_delta": -1.16631000000001,
+    "robustness_reward_ratio": 1.0039755590943389
   }
 }
